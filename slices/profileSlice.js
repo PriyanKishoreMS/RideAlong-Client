@@ -73,6 +73,44 @@ export const getSingleProfile = createAsyncThunk(
   },
 );
 
+export const getProfileById = createAsyncThunk(
+  'profile/getProfileById',
+  async id => {
+    return await fetch(`http://192.168.1.17:5000/api/profile/${id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data, 'data from getProfileById');
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getProfileById'));
+  },
+);
+
+export const getAllProfiles = createAsyncThunk(
+  'profile/getAllProfiles',
+  async () => {
+    return await fetch(`http://192.168.1.17:5000/api/profile`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        // console.log(data, 'data from getAllProfiles');
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getAllProfiles'));
+  },
+);
+
 const profileSlice = createSlice({
   name: 'profile',
   initialState: {
@@ -116,6 +154,28 @@ const profileSlice = createSlice({
       state.profile = [action.payload];
     },
     [getSingleProfile.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getAllProfiles.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getAllProfiles.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getAllProfiles.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getProfileById.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getProfileById.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getProfileById.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

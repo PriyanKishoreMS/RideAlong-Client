@@ -9,6 +9,8 @@ import ExploreScreen from '../ExploreScreen';
 import ProfileScreen from '../ProfileScreen';
 import MapScreen from '../MapScreen';
 import UpdateProfileScreen from '../UpdateProfileScreen';
+import SingleProfileScreen from '../SingleProfileScreen';
+import RideScreen from '../RideScreen';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
@@ -24,13 +26,13 @@ const MainTabScreen = () => {
       activeColor="#fff"
       barStyle={{backgroundColor: '#000'}}>
       <Tab.Screen
-        name="Ride"
+        name="Home"
         component={HomeStackScreen}
         options={{
-          tabBarLabel: 'Ride',
+          tabBarLabel: 'Home',
           tabBarStyle: {display: 'none'},
           tabBarIcon: ({color}) => (
-            <Icon name="ios-car" color={color} size={26} />
+            <Icon name="ios-home" color={color} size={26} />
           ),
         }}
       />
@@ -41,6 +43,16 @@ const MainTabScreen = () => {
           tabBarLabel: 'Explore',
           tabBarIcon: ({color}) => (
             <Icon name="ios-search" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Ride"
+        component={RideScreen}
+        options={{
+          tabBarLabel: 'Rides',
+          tabBarIcon: ({color}) => (
+            <Icon name="ios-car" color={color} size={26} />
           ),
         }}
       />
@@ -93,6 +105,22 @@ const ProfileStackComponent = () => {
   );
 };
 
+const ExploreStackComponent = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ExploreStack"
+        component={ExploreScreen}
+        options={{headerShown: false}}></Stack.Screen>
+      <Stack.Screen
+        name="SingleProfile"
+        component={SingleProfileScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen
@@ -106,8 +134,8 @@ const HomeStackScreen = () => (
 const ExploreStackScreen = () => (
   <ExploreStack.Navigator>
     <ExploreStack.Screen
-      name="ExploreStack"
-      component={ExploreScreen}
+      name="ExploreStackScreen"
+      component={ExploreStackComponent}
       options={{headerShown: false}}
     />
   </ExploreStack.Navigator>

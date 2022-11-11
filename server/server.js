@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/ride', require('./routes/api/ride'));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

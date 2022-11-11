@@ -1,9 +1,8 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {selectOrigin} from '../slices/navSlice';
@@ -12,7 +11,7 @@ const RideCard = () => {
   const navigation = useNavigation();
   const origin = useSelector(selectOrigin);
   return (
-    <SafeAreaView style={tw`bg-white h-full`}>
+    <SafeAreaView style={tw`bg-white`}>
       {/* Create a card of full width */}
       <TouchableOpacity
         style={tw`flex-row justify-between bg-white w-full px-4 py-3 shadow-lg rounded-xl`}

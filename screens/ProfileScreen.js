@@ -8,54 +8,63 @@ import {getSingleProfile} from '../slices/profileSlice';
 import {Button} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MenuButton from '../components/MenuButton';
 
 const HomeScreen = ({navigation}) => {
   const {logout} = useContext(AuthContext);
   const userInfo = auth().currentUser;
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getSingleProfile());
-  }, [dispatch]);
+  const [userProfile, setUserProfile] = useState(null);
 
-  const {profile} = useSelector(state => ({...state.profile}));
+  useEffect(() => {
+    dispatch(getSingleProfile()).then(res => {
+      setUserProfile(res.payload);
+    });
+  }, []);
+
+  // const {profile} = useSelector(state => ({...state.profile}));
 
   // const profile = useSelector(state => state.profile.profile);
   // console.log(profile[0], 'single profile from HomeScreen');
 
   return (
     <View style={tw`bg-white h-full p-5`}>
-      {profile[0] && (
+      <View style={tw`pb-5 flex-row items-center`}>
+        <MenuButton />
+        <Text style={tw`text-center py-2 text-xl`}>Profile</Text>
+      </View>
+      {userProfile && (
         //shadow style for the card
         <View style={tw` rounded-xl bg-gray-200 w-full px-4 py-3`}>
           <View style={tw`flex-row justify-between`}>
             <View>
               <Text style={tw`text-xl font-semibold mb-2`}>
-                {userInfo?.displayName}
-                {/* {profile[0].name} */}
+                {userProfile?.user?.name}
+                {/* {userProfile.name} */}
               </Text>
               <Text style={tw`text-gray-500`}>
-                City: {profile[0]?.location}
+                City: {userProfile?.location}
               </Text>
               <Text style={tw`text-gray-500`}>
-                DOB: {profile[0]?.dob.substr(0, 10)}
+                DOB: {userProfile?.dob.substr(0, 10)}
               </Text>
               <Text style={tw`text-gray-500`}>
-                Mobile: {profile[0]?.mobile}
+                Mobile: {userProfile?.mobile}
               </Text>
               <Text style={tw`text-gray-500`}>
-                College: {profile[0]?.college}
+                College: {userProfile?.college}
               </Text>
               <Text style={tw`text-gray-500`}>
-                Vehicle: {profile[0]?.vehicleType}
+                Vehicle: {userProfile?.vehicleType}
               </Text>
-              {profile[0].vehicleType !== 'None' ? (
+              {userProfile.vehicleType !== 'None' ? (
                 <>
                   <Text style={tw`text-gray-500`}>
-                    Vehicle No: {profile[0]?.vehicleNumber}
+                    Vehicle No: {userProfile?.vehicleNumber}
                   </Text>
                   <Text style={tw`text-gray-500`}>
-                    Model: {profile[0]?.vehicleModel}
+                    Model: {userProfile?.vehicleModel}
                   </Text>
                 </>
               ) : null}
@@ -64,7 +73,7 @@ const HomeScreen = ({navigation}) => {
               <Image
                 source={{
                   uri: userInfo?.photoURL,
-                  // uri: profile[0].photoURL,
+                  // uri: userProfile[0].photoURL,
                 }}
                 style={{
                   width: 100,
@@ -81,7 +90,7 @@ const HomeScreen = ({navigation}) => {
               <Button
                 title="Logout"
                 onPress={() => logout()}
-                buttonStyle={tw`bg-red-500 rounded-xl`}
+                buttonStyle={tw`bg-red-700 rounded-xl`}
               />
             </View>
           </View>
@@ -98,6 +107,19 @@ const HomeScreen = ({navigation}) => {
           <Icon name="chevron-forward" size={30} color="gray" />
         </View>
       </TouchableOpacity>
+      <View style={tw`h-1/4`} />
+      <View style={tw`flex items-center`}>
+        <Text
+          style={tw`items-center text-5xl font-black text- mt-5 opacity-12.5`}>
+          <Icon name="car-sport" size={50} color="gray" /> RideAlong
+        </Text>
+        <Text style={tw`text-black font-medium opacity-12.5`}>
+          Version 1.0.0
+        </Text>
+        <Text style={tw`text-black font-medium opacity-12.5`}>
+          priyankishore.dev
+        </Text>
+      </View>
     </View>
   );
 };

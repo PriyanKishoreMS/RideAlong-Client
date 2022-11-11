@@ -1,4 +1,10 @@
-import {View, Text, SafeAreaView, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import tw from 'twrnc';
 import auth from '@react-native-firebase/auth';
@@ -7,7 +13,7 @@ import {GOOGLEMAPS_API_KEY} from '@env';
 import {useDispatch} from 'react-redux';
 import {setDestination} from '../slices/navSlice';
 import {useNavigation} from '@react-navigation/native';
-import BackButton from '../components/BackButton';
+import {Icon} from 'react-native-elements';
 
 const DestinationCard = () => {
   const dispatch = useDispatch();
@@ -15,6 +21,11 @@ const DestinationCard = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={tw`bg-white flex-1`}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={tw`absolute top-3 left-5 z-5 rounded-full`}>
+        <Icon name="chevron-left" type="fontawesome" />
+      </TouchableOpacity>
       <Text style={tw`text-center py-2 text-xl`}>
         Select a destination, {name.substring(0, name.indexOf(' '))}
       </Text>

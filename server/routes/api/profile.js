@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Profile = require('../../models/Profile');
-const User = require('../../models/User');
 const auth = require('../../middleware/auth');
 
 // @route   GET api/profile/
@@ -11,23 +10,20 @@ const auth = require('../../middleware/auth');
 router.post('/', auth, async (req, res) => {
   const ProfileFields = {};
   ProfileFields.user = req.user.id;
-  const {
-    dob,
-    location,
-    mobile,
-    college,
-    vehicleType,
-    vehicleNumber,
-    vehicleModel,
-  } = req.body;
 
-  if (dob) ProfileFields.dob = dob;
-  if (location) ProfileFields.location = location;
-  if (mobile) ProfileFields.mobile = mobile;
-  if (college) ProfileFields.college = college;
-  if (vehicleType) ProfileFields.vehicleType = vehicleType;
-  if (vehicleNumber) ProfileFields.vehicleNumber = vehicleNumber;
-  if (vehicleModel) ProfileFields.vehicleModel = vehicleModel;
+  const standardFields = [
+    'dob',
+    'location',
+    'mobile',
+    'college',
+    'vehicleType',
+    'vehicleNumber',
+    'vehicleModel',
+  ];
+
+  standardFields.forEach(field => {
+    if (req.body[field]) ProfileFields[field] = req.body[field];
+  });
 
   try {
     let profile = await Profile.findOne({user: req.user.id});
@@ -54,7 +50,11 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const profile = await Profile.find().populate('user', ['name', 'email']);
+    const profile = await Profile.find().populate('user', [
+      'name',
+      'email',
+      'photoURL',
+    ]);
     res.json(profile);
   } catch (err) {
     console.error(err.message);
@@ -76,6 +76,25 @@ router.get('/me', auth, async (req, res) => {
     res.json(profile);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// get single profile by id
+router.get('/:id', async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.id,
+    }).populate('user', ['name', 'photoURL', 'email']);
+
+    if (!profile) return res.status(400).json({msg: 'Profile not found'});
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(400).json({msg: 'Profile not found'});
+    }
     res.status(500).send('Server Error');
   }
 });

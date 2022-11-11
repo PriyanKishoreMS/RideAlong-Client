@@ -7,6 +7,7 @@ import RideCard from '../components/RideCard';
 import {useDispatch} from 'react-redux';
 import {setDestination, setOrigin} from '../slices/navSlice';
 import auth from '@react-native-firebase/auth';
+import MenuButton from '../components/MenuButton';
 
 const HomeScreen = () => {
   const user = auth().currentUser.displayName;
@@ -24,9 +25,13 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
       <View style={tw`p-5`}>
-        <Text style={tw`text-xl mb-3`}>
-          {greetings}, {user.substring(0, user.indexOf(' '))}
-        </Text>
+        {/* menu icon for sidebar */}
+        <View style={tw`flex-row items-center`}>
+          <MenuButton />
+          <Text style={tw`text-xl font-light text-gray-500`}>
+            {greetings}, {user.substring(0, user.indexOf(' '))}
+          </Text>
+        </View>
         <GooglePlacesAutocomplete
           placeholder="Where from?"
           nearbyPlacesAPI="GooglePlacesSearch"
@@ -70,6 +75,7 @@ export default HomeScreen;
 const InputStyles = StyleSheet.create({
   container: {
     flex: 0,
+    marginTop: 10,
   },
   textInput: {
     fontSize: 18,

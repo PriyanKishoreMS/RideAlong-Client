@@ -20,7 +20,7 @@ export function DrawerContent(props) {
   const {logout} = useContext(AuthContext);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={tw`flex-1`}>
       <DrawerContentScrollView {...props}>
         <View
           style={tw`flex flex-col items-center justify-center bg-gray-200 py-10 mx-3 mt-3 rounded-xl`}>
@@ -42,7 +42,7 @@ export function DrawerContent(props) {
             )}
             label="Home"
             onPress={() => {
-              props.navigation.navigate('Ride');
+              props.navigation.navigate('Home');
             }}
           />
           {/* draw border */}
@@ -55,9 +55,27 @@ export function DrawerContent(props) {
               props.navigation.navigate('Profile');
             }}
           />
+          <DrawerItem
+            icon={({color, size}) => (
+              <Icon name="search-outline" color={color} size={size} />
+            )}
+            label="Explore"
+            onPress={() => {
+              props.navigation.navigate('ExploreStack');
+            }}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <Icon name="car-sport-outline" color={color} size={size} />
+            )}
+            label="Ride"
+            onPress={() => {
+              props.navigation.navigate('Rides');
+            }}
+          />
         </Drawer.Section>
       </DrawerContentScrollView>
-      <Drawer.Section style={tw`mb-10`}>
+      <Drawer.Section>
         <DrawerItem
           icon={({color, size}) => (
             <Icon name="exit-outline" color={color} size={size} />
@@ -70,6 +88,9 @@ export function DrawerContent(props) {
           }}
         />
       </Drawer.Section>
+      <Text style={tw`text-center text-gray-500 m-3`}>
+        RideAlong Version 1.0.0
+      </Text>
     </View>
   );
 }

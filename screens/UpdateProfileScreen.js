@@ -1,4 +1,4 @@
-import {View, Button, KeyboardAvoidingView} from 'react-native';
+import {View, KeyboardAvoidingView} from 'react-native';
 import React, {useContext, useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import tw from 'twrnc';
 import {useNavigation} from '@react-navigation/native';
 import {getSingleProfile} from '../slices/profileSlice';
+import {Button} from 'react-native-elements';
 
 import {postProfile} from '../slices/profileSlice';
 import ProfileForm from '../components/ProfileForm';
@@ -75,11 +76,13 @@ const UpdateProfileScreen = () => {
             state={state}
             setState={setState}
           />
-          <View style={tw`flex flex-row items-center justify-center`}>
+          <View
+            style={tw`flex flex-row items-center justify-center mt-2 mb-10 px-12`}>
             <Button
               title="Submit"
               onPress={() => handleProfileSubmit()}
-              style={tw`bg-blue-500 w-1/2`}
+              containerStyle={tw`bg-black w-full mt-4`}
+              buttonStyle={tw`bg-black w-full`}
             />
           </View>
         </KeyboardAvoidingView>
