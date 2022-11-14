@@ -5,6 +5,10 @@ const ProfileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
+  name: {
+    type: String,
+    required: true,
+  },
   dob: {
     type: Date,
     required: true,
@@ -27,6 +31,10 @@ const ProfileSchema = new mongoose.Schema({
   },
   vehicleModel: {
     type: String,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 

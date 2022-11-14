@@ -5,15 +5,17 @@ import {SafeAreaView} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 
 import {postProfile} from '../slices/profileSlice';
 import {AuthContext} from '../hooks/useAuth';
 import ProfileForm from '../components/ProfileForm';
 
 const ProfileCreateScreen = () => {
+  const userInfo = auth().currentUser;
   const [state, setState] = useState({
+    name: '',
     mobile: '',
-    // timezone with new
     dob: new Date(),
     location: '',
     college: '',
@@ -41,6 +43,7 @@ const ProfileCreateScreen = () => {
     } else {
       try {
         const profiles = {
+          name: userInfo.displayName,
           dob: state.dob.toString(),
           location: state.location,
           mobile: state.mobile,

@@ -16,6 +16,7 @@ export const postProfile = createAsyncThunk(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        name: profiles.name,
         dob: profiles.dob,
         location: profiles.location,
         mobile: profiles.mobile,
@@ -85,7 +86,7 @@ export const getProfileById = createAsyncThunk(
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data from getProfileById');
+        // console.log(data, 'data from getProfileById');
         return data;
       })
       .catch(err => console.error(err, 'error from getProfileById'));
@@ -94,17 +95,20 @@ export const getProfileById = createAsyncThunk(
 
 export const getAllProfiles = createAsyncThunk(
   'profile/getAllProfiles',
-  async () => {
-    return await fetch(`http://${IP}/api/profile`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+  async params => {
+    console.log(params, 'page from getAllProfiles');
+    return await fetch(
+      `http://${IP}/api/profile?search=${params[0]}&page=${params[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
       .then(res => res.json())
       .then(data => {
-        // console.log(data, 'data from getAllProfiles');
         return data;
       })
       .catch(err => console.error(err, 'error from getAllProfiles'));

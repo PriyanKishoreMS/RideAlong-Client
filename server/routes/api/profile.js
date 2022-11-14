@@ -12,6 +12,7 @@ router.post('/', auth, async (req, res) => {
   ProfileFields.user = req.user.id;
 
   const standardFields = [
+    'name',
     'dob',
     'location',
     'mobile',
@@ -50,12 +51,45 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const profile = await Profile.find().populate('user', [
-      'name',
-      'email',
-      'photoURL',
-    ]);
-    res.json(profile);
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 7;
+    const search = req.query.search || '';
+    let sort = req.query.sort || 'date';
+
+    req.query.sort ? (sort = req.query.sort.split(',')) : (sort = [sort]);
+
+    let sortBy = {};
+    if (sort[-1]) {
+      sortBy[sort[0]] = sort[-1];
+    } else {
+      sortBy[sort[0]] = 'desc';
+    }
+
+    const profile = await Profile.find({name: {$regex: search, $options: 'i'}})
+      .sort(sortBy)
+      .skip(page * limit)
+      .limit(limit)
+      .populate('user', ['email', 'photoURL']);
+
+    const total = await Profile.countDocuments({
+      name: {$regex: search, $options: 'i'},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    const response = {
+      page: page + 1,
+      limit,
+      total,
+      totalPages,
+      profile,
+    };
+
+    res.status(200).json(response);
+
+    // const profile = await Profile.find()
+    //   .populate('user', ['name', 'photoURL'])
+    //   .sort({date: -1});
+    // res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

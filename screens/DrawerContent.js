@@ -51,9 +51,9 @@ export function DrawerContent(props) {
             icon={({color, size}) => (
               <Icon name="car-sport-outline" color={color} size={size} />
             )}
-            label="Ride"
+            label="Rides"
             onPress={() => {
-              props.navigation.navigate('Rides');
+              props.navigation.navigate('Ride');
             }}
           />
           <DrawerItem
