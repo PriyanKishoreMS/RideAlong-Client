@@ -6,14 +6,12 @@ import auth from '@react-native-firebase/auth';
 import {useDispatch} from 'react-redux';
 
 import {AuthContext} from '../hooks/useAuth';
-import {getSingleUser} from '../slices/profileSlice';
 import {getSingleProfile} from '../slices/profileSlice';
 
 import ProfileCreateScreen from '../screens/ProfileCreateScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MainTabScreen from '../screens/navigator/MainTabScreen';
 import {DrawerContent} from '../screens/DrawerContent';
-import UpdateProfileScreen from '../screens/UpdateProfileScreen';
 
 const Drawer = createDrawerNavigator();
 const CreateProfileStack = createStackNavigator();

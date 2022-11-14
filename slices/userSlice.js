@@ -1,10 +1,6 @@
 const {createSlice, createAsyncThunk} = require('@reduxjs/toolkit');
 import AsyncStorage from '@react-native-community/async-storage';
-
-// const yube = 'http://192.168.1.17:5000/api/users';
-
-const ip = '192.168.1.17';
-
+import {IP} from '@env';
 // send jwt token in header
 
 const onValueChange = async (item, selectedValue) => {
@@ -18,7 +14,7 @@ const onValueChange = async (item, selectedValue) => {
 
 export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
   // console.log(users, 'users from postUser');
-  return await fetch(`http://192.168.1.17:5000/api/users`, {
+  return await fetch(`http://${IP}/api/users`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

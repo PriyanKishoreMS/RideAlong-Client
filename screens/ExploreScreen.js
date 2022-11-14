@@ -33,7 +33,7 @@ const ExploreScreen = () => {
           <MenuButton />
           <TextInput
             style={tw`bg-gray-200 rounded-xl px-4 py-2 w-5/6`}
-            placeholder="Find people"
+            placeholder="Find People"
           />
         </View>
         <View style={tw`px-5`}>

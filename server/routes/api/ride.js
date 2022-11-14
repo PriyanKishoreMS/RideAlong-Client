@@ -8,30 +8,31 @@ const auth = require('../../middleware/auth');
 // @access  Private
 
 router.post('/', auth, async (req, res) => {
-  const user = req.user.id;
-  const email = req.body.email;
+  const RideFields = {};
+  RideFields.user = req.user.id;
 
-  const rideFields = {};
-  rideFields.user = user;
-  rideFields.email = email;
+  const standardFields = [
+    'active',
+    'source',
+    'destination',
+    'date',
+    'time',
+    'seats',
+    'price',
+    'vehicleType',
+    'vehicleNumber',
+    'vehicleModel',
+    'description',
+  ];
 
-  if (req.body.email) rideFields.email = req.body.email;
+  standardFields.forEach(field => {
+    if (req.body[field]) RideFields[field] = req.body[field];
+  });
 
   try {
-    let ride = await Ride.findOne({user});
+    let ride = await Ride.findOne({user: req.user.id});
 
-    if (ride) {
-      ride = await Ride.findOneAndUpdate(
-        {user},
-        {$set: rideFields},
-        {new: true},
-      );
-
-      return res.json(ride);
-    }
-
-    ride = new Ride(rideFields);
-
+    ride = new Ride(RideFields);
     await ride.save();
     res.json(ride);
   } catch (err) {
@@ -44,38 +45,38 @@ router.post('/', auth, async (req, res) => {
 // @desc    Add ride
 // @access  Private
 
-router.post('/:id', auth, async (req, res) => {
-  try {
-    const ride = await Ride.findById(req.params.id);
+// router.post('/:id', auth, async (req, res) => {
+//   try {
+//     const ride = await Ride.findById(req.params.id);
 
-    if (!ride) {
-      return res.status(404).json({msg: 'Ride not found'});
-    }
+//     if (!ride) {
+//       return res.status(404).json({msg: 'Ride not found'});
+//     }
 
-    const newRide = {
-      active: req.body.active,
-      date: req.body.date,
-      source: req.body.source,
-      destination: req.body.destination,
-      distance: req.body.distance,
-      seats: req.body.seats,
-      price: req.body.price,
-      vehicleType: req.body.vehicleType,
-      vehicleNumber: req.body.vehicleNumber,
-      vehicleModel: req.body.vehicleModel,
-      description: req.body.description,
-    };
+//     const newRide = {
+//       active: req.body.active,
+//       date: req.body.date,
+//       time: req.body.time,
+//       source: req.body.source,
+//       destination: req.body.destination,
+//       seats: req.body.seats,
+//       price: req.body.price,
+//       vehicleType: req.body.vehicleType,
+//       vehicleNumber: req.body.vehicleNumber,
+//       vehicleModel: req.body.vehicleModel,
+//       description: req.body.description,
+//     };
 
-    ride.rides.unshift(newRide);
+//     ride.rides.unshift(newRide);
 
-    await ride.save();
+//     await ride.save();
 
-    res.json(ride);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
+//     res.json(ride);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 router.post('/:id/:ride_id', auth, async (req, res) => {
   const rideFields = {};
@@ -83,9 +84,9 @@ router.post('/:id/:ride_id', auth, async (req, res) => {
   const standardFields = [
     'active',
     'date',
+    'time',
     'source',
     'destination',
-    'distance',
     'seats',
     'price',
     'vehicleType',
@@ -145,8 +146,10 @@ router.post('/passenger/:id', auth, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const ride = await Ride.find().sort({date: -1});
-    res.json(ride);
+    const rides = await Ride.find()
+      .sort({date: 1})
+      .populate('user', ['name', 'photoURL']);
+    res.json(rides);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

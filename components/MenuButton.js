@@ -18,7 +18,7 @@ const MenuButton = () => {
         type="ionicon"
         color="black"
         size={20}
-        style={tw`p-2 bg-gray-200 rounded-xl mr-5`}
+        style={tw`p-2 bg-gray-200 rounded-xl mr-3`}
       />
     </TouchableOpacity>
   );

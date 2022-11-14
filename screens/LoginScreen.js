@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import React, {useEffect, useContext, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -48,8 +48,17 @@ const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={tw`flex-1`}>
+      <Image
+        source={require('../assets/images/carbgw.jpg')}
+        style={tw`absolute w-full h-full opacity-75`}
+      />
+      {/* blur background image */}
       <View style={tw`flex items-center justify-center h-full`}>
+        <Image
+          source={require('../assets/images/RideAlong.png')}
+          style={tw` opacity-100 w-98 h-35`}
+        />
         <Button
           title="Google Sign-In"
           onPress={() => handleUserSignIn()}
@@ -61,7 +70,7 @@ const LoginScreen = () => {
             size: 20,
           }}
           buttonStyle={{
-            backgroundColor: '#4285F4',
+            backgroundColor: 'black',
             width: 200,
             height: 40,
             borderColor: 'transparent',

@@ -32,7 +32,7 @@ const HomeScreen = ({navigation}) => {
     <View style={tw`bg-white h-full p-5`}>
       <View style={tw`pb-5 flex-row items-center`}>
         <MenuButton />
-        <Text style={tw`text-center py-2 text-xl`}>Profile</Text>
+        <Text style={tw`text-center py-2 text-xl font-light`}>Profile</Text>
       </View>
       {userProfile && (
         //shadow style for the card
@@ -109,8 +109,7 @@ const HomeScreen = ({navigation}) => {
       </TouchableOpacity>
       <View style={tw`h-1/4`} />
       <View style={tw`flex items-center`}>
-        <Text
-          style={tw`items-center text-5xl font-black text- mt-5 opacity-12.5`}>
+        <Text style={tw`items-center text-5xl font-black mt-5 opacity-12.5`}>
           <Icon name="car-sport" size={50} color="gray" /> RideAlong
         </Text>
         <Text style={tw`text-black font-medium opacity-12.5`}>

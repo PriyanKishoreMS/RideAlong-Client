@@ -2,15 +2,7 @@ import {View, Text, Image} from 'react-native';
 import React, {useEffect, useContext} from 'react';
 import tw from 'twrnc';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  TouchableRipple,
-  Switch,
-} from 'react-native-paper';
+import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import {AuthContext} from '../hooks/useAuth';
@@ -48,15 +40,6 @@ export function DrawerContent(props) {
           {/* draw border */}
           <DrawerItem
             icon={({color, size}) => (
-              <Icon name="person-outline" color={color} size={size} />
-            )}
-            label="Profile"
-            onPress={() => {
-              props.navigation.navigate('Profile');
-            }}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
               <Icon name="search-outline" color={color} size={size} />
             )}
             label="Explore"
@@ -71,6 +54,15 @@ export function DrawerContent(props) {
             label="Ride"
             onPress={() => {
               props.navigation.navigate('Rides');
+            }}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <Icon name="person-outline" color={color} size={size} />
+            )}
+            label="Profile"
+            onPress={() => {
+              props.navigation.navigate('Profile');
             }}
           />
         </Drawer.Section>

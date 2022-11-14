@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-community/async-storage';
-const ip = '192.168.1.17';
+import {IP} from '@env';
 
 export const postProfile = createAsyncThunk(
   'profile/postProfile',
@@ -8,7 +8,7 @@ export const postProfile = createAsyncThunk(
     var token = await AsyncStorage.getItem('token');
     // console.log(profiles, 'profiles from postProfile');
     console.log(token, 'token from profileSlice');
-    return await fetch(`http://192.168.1.17:5000/api/profile`, {
+    return await fetch(`http://${IP}/api/profile`, {
       method: 'POST',
       headers: {
         'auth-token': token,
@@ -34,8 +34,8 @@ export const getSingleUser = createAsyncThunk(
   'profile/getSingleUser',
   async () => {
     var token = await AsyncStorage.getItem('token');
-    console.log(token, 'token from getSingleUser');
-    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
+    // console.log(token, 'token from getSingleUser');
+    return await fetch(`http://${IP}/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -55,8 +55,8 @@ export const getSingleProfile = createAsyncThunk(
   'profile/getSingleProfile',
   async () => {
     var token = await AsyncStorage.getItem('token');
-    console.log(token, 'token from getSingleProfile');
-    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
+    // console.log(token, 'token from getSingleProfile');
+    return await fetch(`http://${IP}/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -76,7 +76,7 @@ export const getSingleProfile = createAsyncThunk(
 export const getProfileById = createAsyncThunk(
   'profile/getProfileById',
   async id => {
-    return await fetch(`http://192.168.1.17:5000/api/profile/${id}`, {
+    return await fetch(`http://${IP}/api/profile/${id}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -95,7 +95,7 @@ export const getProfileById = createAsyncThunk(
 export const getAllProfiles = createAsyncThunk(
   'profile/getAllProfiles',
   async () => {
-    return await fetch(`http://192.168.1.17:5000/api/profile`, {
+    return await fetch(`http://${IP}/api/profile`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

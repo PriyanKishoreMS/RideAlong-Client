@@ -1,6 +1,7 @@
 import {View, Text, Image} from 'react-native';
 import React, {useState} from 'react';
-import DatePicker from 'react-native-date-picker';
+// import DatePicker from 'react-native-date-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
@@ -10,6 +11,7 @@ import {Button} from 'react-native-elements';
 const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
   const [dateState, setDateState] = useState(false);
   const userInfo = auth().currentUser;
+
   return (
     <View style={tw`flex items-center justify-center`}>
       <Image
@@ -48,19 +50,23 @@ const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
           monthPlaceholder="Month"
           dayPlaceholder="Day"
         />
-        <DatePicker
-          modal
-          open={open}
-          date={date}
-          onConfirm={date => {
-            setOpen(false);
-            setDate(date);
-            setState({...state, dob: date});
-            setDateState(true);
-          }}
-          mode="date"
-          onCancel={() => setOpen(false)}
-        />
+
+        {open && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            onChange={(event, selectedDate) => {
+              const currentDate = selectedDate || date;
+              setOpen(false);
+              setDate(currentDate);
+              setState({...state, dob: currentDate});
+              setDateState(true);
+            }}
+          />
+        )}
       </View>
       <TextInput
         style={tw`bg-gray-300 rounded-lg w-3/4 p-2 m-2`}
@@ -78,8 +84,8 @@ const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
         <RNPickerSelect
           onValueChange={value => setState({...state, vehicleType: value})}
           items={[
-            {label: 'Two Wheeler', value: 'Two Wheeler'},
-            {label: 'Four Wheeler', value: 'Four Wheeler'},
+            {label: 'Bike', value: 'Bike'},
+            {label: 'Car', value: 'Car'},
             {label: 'None', value: 'None'},
           ]}
           placeholder={{
