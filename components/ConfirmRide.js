@@ -17,7 +17,7 @@ import {Button} from 'react-native-elements';
 import {Icon} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import {getSingleProfile} from '../slices/profileSlice';
+import {getMyProfile} from '../slices/profileSlice';
 import {postRide} from '../slices/rideSlice';
 
 const ConfirmRide = ({navigation}) => {
@@ -34,7 +34,7 @@ const ConfirmRide = ({navigation}) => {
   const [vehicle, setVehicle] = useState(null);
 
   useEffect(() => {
-    dispatch(getSingleProfile()).then(res => {
+    dispatch(getMyProfile()).then(res => {
       setVehicle(res.payload);
     });
     console.log('coming');

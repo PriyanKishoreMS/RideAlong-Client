@@ -49,7 +49,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 7;
@@ -65,7 +65,11 @@ router.get('/', async (req, res) => {
       sortBy[sort[0]] = 'desc';
     }
 
-    const profile = await Profile.find({name: {$regex: search, $options: 'i'}})
+    //don't show the current user's profile
+    const profile = await Profile.find({
+      name: {$regex: search, $options: 'i'},
+      user: {$ne: req.user.id},
+    })
       .sort(sortBy)
       .skip(page * limit)
       .limit(limit)
@@ -108,6 +112,41 @@ router.get('/me', auth, async (req, res) => {
     }
 
     res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.patch('/friend/:id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({user: req.user.id});
+    const friendProfile = await Profile.findOne({user: req.params.id});
+
+    if (profile === friendProfile) {
+      return res.status(400).json({msg: 'You cannot add yourself as a friend'});
+    }
+
+    if (!friendProfile) {
+      return res.status(400).json({msg: 'There is no profile for this user'});
+    }
+
+    if (profile.following.includes(req.params.id)) {
+      profile.following = profile.following.filter(
+        following => following != req.params.id,
+      );
+      friendProfile.followers = friendProfile.followers.filter(
+        follower => follower != req.user.id,
+      );
+    } else {
+      profile.following.push(req.params.id);
+      friendProfile.followers.push(req.user.id);
+    }
+
+    await profile.save();
+    await friendProfile.save();
+
+    res.json(profile.following);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

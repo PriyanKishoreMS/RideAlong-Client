@@ -4,7 +4,7 @@ import {AuthContext} from '../hooks/useAuth';
 import tw from 'twrnc';
 import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {getSingleProfile} from '../slices/profileSlice';
+import {getMyProfile} from '../slices/profileSlice';
 import {Button} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,7 +18,7 @@ const HomeScreen = ({navigation}) => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    dispatch(getSingleProfile()).then(res => {
+    dispatch(getMyProfile()).then(res => {
       setUserProfile(res.payload);
     });
   }, []);
@@ -36,7 +36,7 @@ const HomeScreen = ({navigation}) => {
       </View>
       {userProfile && (
         //shadow style for the card
-        <View style={tw` rounded-xl bg-gray-200 w-full px-4 py-3`}>
+        <View style={tw` rounded-xl bg-slate-200 w-full px-4 py-3`}>
           <View style={tw`flex-row justify-between`}>
             <View>
               <Text style={tw`text-xl font-semibold mb-2`}>
@@ -57,6 +57,12 @@ const HomeScreen = ({navigation}) => {
               </Text>
               <Text style={tw`text-gray-500`}>
                 Vehicle: {userProfile?.vehicleType}
+              </Text>
+              <Text style={tw`text-gray-500`}>
+                Followers: {userProfile?.followers?.length}
+              </Text>
+              <Text style={tw`text-gray-500`}>
+                Following: {userProfile?.following?.length}
               </Text>
               {userProfile.vehicleType !== 'None' ? (
                 <>

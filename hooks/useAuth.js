@@ -5,10 +5,10 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
+import {GOOGLE_WEBCLIENTID} from '@env';
 
 GoogleSignin.configure({
-  webClientId:
-    '639632226284-op4qstbtp4f6hnmesl0nitsqiak19t4s.apps.googleusercontent.com',
+  webClientId: GOOGLE_WEBCLIENTID,
 });
 
 export const AuthContext = createContext({});

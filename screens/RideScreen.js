@@ -29,11 +29,11 @@ const RideScreen = () => {
         <View style={tw`p-5 flex-row items-center`}>
           <MenuButton />
           <TextInput
-            style={tw`bg-gray-200 rounded-xl px-4 py-2 w-5/6`}
+            style={tw`bg-slate-200 rounded-xl px-4 py-2 w-5/6`}
             placeholder="Find Rides"
           />
         </View>
-        <View style={tw`flex justify-between items-center mb-3 px-5`}>
+        <View style={tw`flex justify-between items-center mb-18 px-5`}>
           {rides &&
             rides.map((ride, index) => {
               return (

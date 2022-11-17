@@ -10,6 +10,7 @@ import MapScreen from '../MapScreen';
 import UpdateProfileScreen from '../UpdateProfileScreen';
 import SingleProfileScreen from '../SingleProfileScreen';
 import RideScreen from '../RideScreen';
+import NotificationScreen from '../NotificationScreen';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
@@ -22,8 +23,24 @@ const MainTabScreen = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor="#fff"
-      barStyle={{backgroundColor: '#000'}}>
+      activeColor="white"
+      inactiveColor="#94a3b8"
+      screenOptions={{
+        tabBarHideOnKeyboard: true,
+      }}
+      barStyle={{
+        backgroundColor: '#475569',
+        // margin: 10,
+        // borderTopLeftRadius: 14,
+        // borderTopRightRadius: 14,
+        // borderBottomLeftRadius: 14,
+        // borderBottomRightRadius: 14,
+        // borderLeftWidth: 0.2,
+        // borderRightWidth: 0.2,
+        // position: 'absolute',
+        // overflow: 'hidden',
+        // opacity: 0.8,
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
@@ -52,6 +69,16 @@ const MainTabScreen = () => {
           tabBarLabel: 'Rides',
           tabBarIcon: ({color}) => (
             <Icon name="ios-car" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          tabBarLabel: 'Bells',
+          tabBarIcon: ({color}) => (
+            <Icon name="ios-notifications" color={color} size={26} />
           ),
         }}
       />

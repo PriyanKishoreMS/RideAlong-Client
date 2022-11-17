@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import BackButton from '../components/BackButton';
 import {useSelector} from 'react-redux';
 import tw from 'twrnc';
+import {Button, Icon} from 'react-native-elements';
 
 const SingleProfileScreen = ({navigation}) => {
   const [profile, setProfile] = useState(null);
@@ -28,6 +29,27 @@ const SingleProfileScreen = ({navigation}) => {
             </Text>
             <Text style={tw`text-lg text-gray-600`}>{profile?.user.email}</Text>
             <Text style={tw`text-lg text-gray-600`}>{profile?.college}</Text>
+            <View style={tw`flex-row items-center`}>
+              <Text style={tw`text-lg text-gray-600`}>
+                {profile?.followers.length} Followers{'  '}
+              </Text>
+              <Text style={tw`text-lg text-gray-600`}>
+                {profile?.following.length} Following
+              </Text>
+            </View>
+            <Button
+              title="Follow"
+              icon={
+                <Icon
+                  name="user-plus"
+                  type="font-awesome"
+                  size={15}
+                  color="white"
+                  style={tw`mr-2`}
+                />
+              }
+              buttonStyle={tw`bg-blue-500 mt-3`}
+            />
           </View>
           <Text style={tw`text-lg text-gray-700 px-3 mt-3`}>
             {profile?.mobile}

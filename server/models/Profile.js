@@ -32,6 +32,18 @@ const ProfileSchema = new mongoose.Schema({
   vehicleModel: {
     type: String,
   },
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+    },
+  ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,

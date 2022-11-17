@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 import {useDispatch} from 'react-redux';
 
 import {AuthContext} from '../hooks/useAuth';
-import {getSingleProfile} from '../slices/profileSlice';
+import {getMyProfile} from '../slices/profileSlice';
 
 import ProfileCreateScreen from '../screens/ProfileCreateScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -40,7 +40,7 @@ const StackNavigator = () => {
     //     setProfile(false);
     //   }
     // });
-    dispatch(getSingleProfile());
+    dispatch(getMyProfile());
     console.log(profile);
   }, [user]);
 

@@ -14,14 +14,15 @@ const RideCard = () => {
     <SafeAreaView style={tw`bg-white`}>
       {/* Create a card of full width */}
       <TouchableOpacity
-        style={tw`flex-row justify-between bg-white w-full px-4 py-3 shadow-lg rounded-xl`}
+        style={tw`flex-row justify-between bg-white w-full px-4 py-3 shadow-lg rounded-xl mt-4`}
         disabled={!origin}
         onPress={() => navigation.navigate('Map')}>
         {/* Left side of the card */}
-        <View style={tw`${!origin && 'opacity-20'}`}>
-          <Text style={tw`text-xl font-semibold`}>
-            Schedule ride
-            <Icon name="timer-outline" size={20} />
+        {/* tw`${!origin && 'opacity-20'}` */}
+        <View style={origin ? {opacity: 1} : {opacity: 0.2}}>
+          <Text style={tw`text-xl font-semibold text-gray-700`}>
+            Schedule ride{' '}
+            <Icon name="timer-outline" color="#2196F3" size={20} />
           </Text>
           <Text style={tw`text-gray-500`}>Select your destination</Text>
           <Image
@@ -35,8 +36,13 @@ const RideCard = () => {
           />
         </View>
         {/* Right side of the card */}
-        <View style={tw`flex-row items-center ${!origin && 'opacity-50'}`}>
-          <Icon name="chevron-forward" size={40} color="gray" />
+        <View style={tw`flex-row items-center`}>
+          <Icon
+            name="chevron-forward"
+            size={40}
+            color="gray"
+            style={origin ? {opacity: 1} : {opacity: 0.2}}
+          />
           {/* <Icon name="arrow-forward-circle-outline" size={40} color="#777777" /> */}
         </View>
       </TouchableOpacity>

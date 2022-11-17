@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 // import DatePicker from 'react-native-date-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -23,15 +23,16 @@ const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
       </Text>
       {/* <Text style={tw`text-lg font-semibold m-2`}>Enter your details</Text> */}
       <TextInput
-        style={tw` rounded-lg w-3/4 p-2 m-2 bg-gray-300`}
+        style={tw` rounded-lg w-3/4 p-2 m-2 bg-gray-200`}
         placeholder="Mobile Number"
         keyboardType="number-pad"
         onChangeText={text => setState({...state, mobile: text})}
         value={state.mobile}
         //regex for mobile number
       />
-      <View
-        style={tw`flex flex-row items-center bg-gray-300 rounded-lg w-3/4 m-2`}>
+      <TouchableOpacity
+        onPress={() => setOpen(true)}
+        style={tw`flex flex-row items-center bg-gray-200 rounded-lg w-3/4 m-2`}>
         <Text
           style={tw`font-normal ${
             dateState ? `text-black` : `text-gray-500`
@@ -67,20 +68,20 @@ const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
             }}
           />
         )}
-      </View>
+      </TouchableOpacity>
       <TextInput
-        style={tw`bg-gray-300 rounded-lg w-3/4 p-2 m-2`}
+        style={tw`bg-gray-200 rounded-lg w-3/4 p-2 m-2`}
         placeholder="Location"
         onChangeText={text => setState({...state, location: text})}
         value={state.location}
       />
       <TextInput
-        style={tw`bg-gray-300 rounded-lg w-3/4 p-2 m-2`}
+        style={tw`bg-gray-200 rounded-lg w-3/4 p-2 m-2`}
         placeholder="College"
         onChangeText={text => setState({...state, college: text})}
         value={state.college}
       />
-      <View style={tw`border-2 border-gray-300 rounded-lg w-3/4 m-2 `}>
+      <View style={tw`border-2 border-gray-200 rounded-lg w-3/4 m-2 `}>
         <RNPickerSelect
           onValueChange={value => setState({...state, vehicleType: value})}
           items={[
@@ -93,19 +94,19 @@ const ProfileForm = ({state, setState, open, setOpen, date, setDate}) => {
             value: null,
           }}
           style={tw`text-black`}
-          // style={tw`w-3/4 m-2 border-2 border-gray-300 text-gray-400 rounded-lg p-2`}
+          // style={tw`w-3/4 m-2 border-2 border-gray-200 text-gray-400 rounded-lg p-2`}
         />
       </View>
       {state.vehicleType !== 'None' ? (
         <>
           <TextInput
-            style={tw`bg-gray-300 rounded-lg w-3/4 p-2 m-2`}
+            style={tw`bg-gray-200 rounded-lg w-3/4 p-2 m-2`}
             placeholder="Vehicle Number"
             onChangeText={text => setState({...state, vehicleNumber: text})}
             value={state.vehicleNumber}
           />
           <TextInput
-            style={tw`bg-gray-300 rounded-lg w-3/4 p-2 m-2`}
+            style={tw`bg-gray-200 rounded-lg w-3/4 p-2 m-2`}
             placeholder="Vehicle Model"
             onChangeText={text => setState({...state, vehicleModel: text})}
             value={state.vehicleModel}

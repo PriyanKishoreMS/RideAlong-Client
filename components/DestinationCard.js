@@ -14,6 +14,7 @@ import {useDispatch} from 'react-redux';
 import {setDestination} from '../slices/navSlice';
 import {useNavigation} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
+import SelectAddress from './SelectAddress';
 
 const DestinationCard = () => {
   const dispatch = useDispatch();
@@ -29,38 +30,41 @@ const DestinationCard = () => {
       <Text style={tw`text-center py-2 text-xl`}>
         Select a destination, {name.substring(0, name.indexOf(' '))}
       </Text>
-      <View style={tw`border-t border-gray-200 flex-shrink`}>
-        <GooglePlacesAutocomplete
-          placeholder="Where to?"
-          nearbyPlacesAPI="GooglePlacesSearch"
-          returnKeyType={'search'}
-          debounce={400}
-          minLength={2}
-          listViewDisplayed="auto"
-          focusable={true}
-          enablePoweredByContainer={false}
-          onPress={(data, details = null) => {
-            // console.log(data, details);
-            dispatch(
-              setDestination({
-                location: details.geometry.location,
-                description: data.description,
-              }),
-            );
-            navigation.navigate('ConfirmRide');
-          }}
-          fetchDetails={true}
-          // currentLocation={true}
-          // currentLocationLabel="Current location"
-          //add clear button
-          // clearButtonMode="always"
-          styles={InputStyles}
-          query={{
-            key: GOOGLEMAPS_API_KEY,
-            language: 'en',
-            components: 'country:in',
-          }}
-        />
+      <View style={tw`border-t border-gray-200 flex-shrink `}>
+        <View style={tw`px-5`}>
+          <GooglePlacesAutocomplete
+            placeholder="Where to?"
+            nearbyPlacesAPI="GooglePlacesSearch"
+            returnKeyType={'search'}
+            debounce={400}
+            minLength={2}
+            listViewDisplayed="auto"
+            focusable={true}
+            enablePoweredByContainer={false}
+            onPress={(data, details = null) => {
+              // console.log(data, details);
+              dispatch(
+                setDestination({
+                  location: details.geometry.location,
+                  description: data.description,
+                }),
+              );
+              navigation.navigate('ConfirmRide');
+            }}
+            fetchDetails={true}
+            // currentLocation={true}
+            // currentLocationLabel="Current location"
+            //add clear button
+            // clearButtonMode="always"
+            styles={InputStyles}
+            query={{
+              key: GOOGLEMAPS_API_KEY,
+              language: 'en',
+              components: 'country:in',
+            }}
+          />
+          <SelectAddress />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -73,6 +77,7 @@ const InputStyles = StyleSheet.create({
     flex: 0,
     backgroundColor: 'white',
     paddingTop: 20,
+    marginBottom: 20,
   },
   textInput: {
     fontSize: 16,
@@ -80,7 +85,7 @@ const InputStyles = StyleSheet.create({
     borderRadius: 10,
   },
   textInputContainer: {
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingBottom: 0,
   },
 });
