@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from 'react-native-elements';
 
 import HomeScreen from '../HomeScreen';
 import ExploreScreen from '../ExploreScreen';
@@ -23,13 +23,22 @@ const MainTabScreen = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor="white"
+      activeColor="#1e293b"
       inactiveColor="#94a3b8"
       screenOptions={{
         tabBarHideOnKeyboard: true,
       }}
       barStyle={{
-        backgroundColor: '#475569',
+        backgroundColor: '#e2e8f0',
+        borderTopWidth: 1,
+        borderTopColor: '#cbd5e1',
+        // height: 55,
+        // position: 'absolute',
+        // bottom: 10,
+        // left: 10,
+        // right: 10,
+        // elevation: 2,
+        // borderRadius: 14,
         // margin: 10,
         // borderTopLeftRadius: 14,
         // borderTopRightRadius: 14,
@@ -47,8 +56,13 @@ const MainTabScreen = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarStyle: {display: 'none'},
-          tabBarIcon: ({color}) => (
-            <Icon name="ios-home" color={color} size={26} />
+          tabBarIcon: ({color, focused}) => (
+            <Icon
+              name={focused ? 'home' : 'home-outline'}
+              type="ionicon"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -57,8 +71,13 @@ const MainTabScreen = () => {
         component={ExploreStackScreen}
         options={{
           tabBarLabel: 'Explore',
-          tabBarIcon: ({color}) => (
-            <Icon name="ios-search" color={color} size={26} />
+          tabBarIcon: ({color, focused}) => (
+            <Icon
+              name={focused ? 'search' : 'search-outline'}
+              type="ionicon"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -67,8 +86,13 @@ const MainTabScreen = () => {
         component={RideScreen}
         options={{
           tabBarLabel: 'Rides',
-          tabBarIcon: ({color}) => (
-            <Icon name="ios-car" color={color} size={26} />
+          tabBarIcon: ({color, focused}) => (
+            <Icon
+              name={focused ? 'car' : 'car-outline'}
+              type="ionicon"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -77,8 +101,13 @@ const MainTabScreen = () => {
         component={NotificationScreen}
         options={{
           tabBarLabel: 'Bells',
-          tabBarIcon: ({color}) => (
-            <Icon name="ios-notifications" color={color} size={26} />
+          tabBarIcon: ({color, focused}) => (
+            <Icon
+              name={focused ? 'ios-notifications' : 'ios-notifications-outline'}
+              type="ionicon"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -87,8 +116,13 @@ const MainTabScreen = () => {
         component={ProfileStackScreen}
         options={{
           // tabBarLabel: 'Profile',
-          tabBarIcon: ({color}) => (
-            <Icon name="ios-person" color={color} size={26} />
+          tabBarIcon: ({color, focused}) => (
+            <Icon
+              name={focused ? 'person' : 'person-outline'}
+              type="ionicon"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />

@@ -35,6 +35,24 @@ export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
     .catch(err => console.log(err));
 });
 
+export const postFriend = createAsyncThunk('user/postFriend', async id => {
+  var token = await AsyncStorage.getItem('token');
+  return await fetch(`http://${IP}/api/users/friend/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'auth-token': token,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data, 'data from postFriend');
+      return data;
+    })
+    .catch(err => console.error(err, 'error from postFriend'));
+});
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -56,6 +74,17 @@ const userSlice = createSlice({
       state.user = action.payload;
     },
     [postUser.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [postFriend.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [postFriend.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [postFriend.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

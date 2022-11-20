@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Ride = require('../../models/Ride');
+const User = require('../../models/User');
 const auth = require('../../middleware/auth');
 
 // @route   POST api/ride/
@@ -52,6 +53,34 @@ router.post('/', auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const rides = await Ride.find()
+      .sort({date: 1})
+      .populate('user', ['name', 'photoURL']);
+    res.json(rides);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// get all rides by user
+router.get('/user', auth, async (req, res) => {
+  try {
+    const rides = await Ride.find({user: req.user.id})
+      .sort({date: 1})
+      .populate('user', ['name', 'photoURL', 'following']);
+    res.json(rides);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// get all rides of user following
+router.get('/following', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const following = user.following;
+    const rides = await Ride.find({user: {$in: following}})
       .sort({date: 1})
       .populate('user', ['name', 'photoURL']);
     res.json(rides);

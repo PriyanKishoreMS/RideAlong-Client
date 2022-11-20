@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Profile = require('../../models/Profile');
+const Ride = require('../../models/Ride');
 const auth = require('../../middleware/auth');
 
 // @route   GET api/profile/
@@ -104,7 +105,7 @@ router.get('/me', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate('user', ['name', 'photoURL']);
+    }).populate('user', ['name', 'photoURL', 'following']);
     console.log(profile, 'profile from profile/me');
 
     if (!profile) {
@@ -118,35 +119,38 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-router.patch('/friend/:id', auth, async (req, res) => {
+// get following profiles
+router.get('/following', auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({user: req.user.id});
-    const friendProfile = await Profile.findOne({user: req.params.id});
+    const profile = await Profile.findOne({
+      user: req.user.id,
+    }).populate('user', ['name', 'photoURL', 'following']);
 
-    if (profile === friendProfile) {
-      return res.status(400).json({msg: 'You cannot add yourself as a friend'});
-    }
+    const following = profile.user.following;
+    const followingProfiles = await Profile.find({
+      user: {$in: following},
+    }).populate('user', ['name', 'photoURL']);
 
-    if (!friendProfile) {
-      return res.status(400).json({msg: 'There is no profile for this user'});
-    }
+    res.json(followingProfiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
-    if (profile.following.includes(req.params.id)) {
-      profile.following = profile.following.filter(
-        following => following != req.params.id,
-      );
-      friendProfile.followers = friendProfile.followers.filter(
-        follower => follower != req.user.id,
-      );
-    } else {
-      profile.following.push(req.params.id);
-      friendProfile.followers.push(req.user.id);
-    }
+// get followers profiles
+router.get('/followers', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.user.id,
+    }).populate('user', ['name', 'photoURL', 'following']);
 
-    await profile.save();
-    await friendProfile.save();
+    const followers = profile.user.followers;
+    const followersProfiles = await Profile.find({
+      user: {$in: followers},
+    }).populate('user', ['name', 'photoURL']);
 
-    res.json(profile.following);
+    res.json(followersProfiles);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -158,11 +162,26 @@ router.get('/:id', async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.params.id,
-    }).populate('user', ['name', 'photoURL', 'email']);
+    }).populate('user', [
+      'name',
+      'photoURL',
+      'email',
+      'following',
+      'followers',
+    ]);
 
-    if (!profile) return res.status(400).json({msg: 'Profile not found'});
+    const rides = await Ride.find({user: req.params.id}).sort({date: 1});
 
-    res.json(profile);
+    if (!profile) {
+      return res.status(400).json({msg: 'Profile not found'});
+    }
+
+    const response = {
+      profile,
+      rides,
+    };
+
+    res.json(response);
   } catch (err) {
     console.error(err.message);
     if (err.kind == 'ObjectId') {

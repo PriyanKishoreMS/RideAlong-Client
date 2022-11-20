@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const RideSchema = new Schema({
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
   active: {

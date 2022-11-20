@@ -67,7 +67,7 @@ export const getMyProfile = createAsyncThunk(
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data from getMyProfile');
+        // console.log(data, 'data from getMyProfile');
         return data;
       })
       .catch(err => console.error(err, 'error from getMyProfile'));
@@ -116,24 +116,6 @@ export const getAllProfiles = createAsyncThunk(
       .catch(err => console.error(err, 'error from getAllProfiles'));
   },
 );
-
-export const postFriend = createAsyncThunk('profile/postFriend', async id => {
-  var token = await AsyncStorage.getItem('token');
-  return await fetch(`http://${IP}/api/profile/friend/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'auth-token': token,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data, 'data from postFriend');
-      return data;
-    })
-    .catch(err => console.error(err, 'error from postFriend'));
-});
 
 const profileSlice = createSlice({
   name: 'profile',
@@ -200,17 +182,6 @@ const profileSlice = createSlice({
       state.profile = action.payload;
     },
     [getProfileById.rejected]: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    [postFriend.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [postFriend.fulfilled]: (state, action) => {
-      state.loading = false;
-      state.profile = action.payload;
-    },
-    [postFriend.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

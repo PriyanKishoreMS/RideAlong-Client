@@ -11,20 +11,22 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import tw from 'twrnc';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {Button, Icon} from 'react-native-elements';
 import MenuButton from '../components/MenuButton';
 import {getAllProfiles} from '../slices/profileSlice';
 import {getProfileById} from '../slices/profileSlice';
-import {postFriend} from '../slices/profileSlice';
+import {postFriend} from '../slices/userSlice';
 import {getMyProfile} from '../slices/profileSlice';
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
+  const refresh = useIsFocused();
   const dispatch = useDispatch();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [id, setId] = useState('');
   const [following, setFollowing] = useState([]);
   const [followChange, setFollowChange] = useState(false);
 
@@ -42,7 +44,8 @@ const ExploreScreen = () => {
 
   useEffect(() => {
     dispatch(getMyProfile()).then(res => {
-      setFollowing(res.payload.following);
+      setId(res.payload.user._id);
+      setFollowing(res.payload.user.following);
     });
   }, [followChange]);
 
@@ -65,12 +68,14 @@ const ExploreScreen = () => {
                   style={tw`flex-row m-2 p-2 bg-slate-50 rounded-lg shadow-md items-center justify-between`}
                   onPress={async () => {
                     await dispatch(getProfileById(item?.user._id));
-                    navigation.navigate('SingleProfile');
+                    navigation.navigate('SingleProfile', {
+                      id: id,
+                    });
                   }}
                   key={index}>
                   <View style={tw`flex-row items-center`}>
                     <Image
-                      source={{uri: item.user.photoURL}}
+                      source={{uri: item?.user.photoURL}}
                       style={tw`w-10 h-10 rounded-xl mr-2`}
                     />
                     <Text style={tw`font-bold text-lg text-gray-600`}>
@@ -118,6 +123,21 @@ const ExploreScreen = () => {
                           },
                         })}
                   />
+                  {/* <Button
+                    icon={
+                      <Icon
+                        name="person-add"
+                        type="ionicon"
+                        color="white"
+                        size={20}
+                      />
+                    }
+                    buttonStyle={tw`bg-blue-500 rounded-lg p-2 ml-auto`}
+                    onPress={async () => {
+                      await dispatch(postFriend(item.user._id));
+                      setFollowChange(!followChange);
+                    }}
+                  /> */}
                 </TouchableOpacity>
               );
             })}
