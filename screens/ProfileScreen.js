@@ -18,9 +18,13 @@ const HomeScreen = ({navigation}) => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    dispatch(getMyProfile()).then(res => {
-      setUserProfile(res.payload);
-    });
+    dispatch(getMyProfile())
+      .then(res => {
+        setUserProfile(res.payload.profile);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, []);
 
   // const {profile} = useSelector(state => ({...state.profile}));

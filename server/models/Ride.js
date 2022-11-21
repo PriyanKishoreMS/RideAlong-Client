@@ -50,10 +50,8 @@ const RideSchema = new Schema({
   },
   passengers: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'profile',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
     },
   ],
 });

@@ -14,10 +14,12 @@ import tw from 'twrnc';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {Button, Icon} from 'react-native-elements';
 import MenuButton from '../components/MenuButton';
-import {getAllProfiles} from '../slices/profileSlice';
+import {getAllUsers} from '../slices/userSlice';
 import {getProfileById} from '../slices/profileSlice';
 import {postFriend} from '../slices/userSlice';
 import {getMyProfile} from '../slices/profileSlice';
+import Following from '../components/Following';
+import Followers from '../components/Followers';
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -28,25 +30,35 @@ const ExploreScreen = () => {
   const [page, setPage] = useState(1);
   const [id, setId] = useState('');
   const [following, setFollowing] = useState([]);
+  const [followingData, setFollowingData] = useState([]);
+  const [followersData, setFollowersData] = useState([]);
   const [followChange, setFollowChange] = useState(false);
+  const [component, setComponent] = useState('following');
 
   const args = [search, page];
 
   useEffect(() => {
-    dispatch(getAllProfiles(args)).then(res => {
+    dispatch(getAllUsers(args)).then(res => {
       setData(res.payload);
     });
 
+    console.log(data, 'data from useEffect');
+
     if (search) {
-      setPage(1);
+      // setPage(1);
+      setComponent('explore');
     }
   }, [search, page]);
 
   useEffect(() => {
-    dispatch(getMyProfile()).then(res => {
-      setId(res.payload.user._id);
-      setFollowing(res.payload.user.following);
-    });
+    dispatch(getMyProfile())
+      .then(res => {
+        setId(res.payload?.profile?.user?._id);
+        setFollowing(res.payload?.profile?.user?.following);
+        setFollowersData(res.payload?.followersProfiles);
+        setFollowingData(res.payload?.followingProfiles);
+      })
+      .catch(err => console.log(err));
   }, [followChange]);
 
   return (
@@ -60,70 +72,103 @@ const ExploreScreen = () => {
             onChangeText={text => setSearch(text)}
           />
         </View>
-        <View style={tw`px-5`}>
-          {data &&
-            data.profile.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  style={tw`flex-row m-2 p-2 bg-slate-50 rounded-lg shadow-md items-center justify-between`}
-                  onPress={async () => {
-                    await dispatch(getProfileById(item?.user._id));
-                    navigation.navigate('SingleProfile', {
-                      id: id,
-                    });
-                  }}
-                  key={index}>
-                  <View style={tw`flex-row items-center`}>
-                    <Image
-                      source={{uri: item?.user.photoURL}}
-                      style={tw`w-10 h-10 rounded-xl mr-2`}
-                    />
-                    <Text style={tw`font-bold text-lg text-gray-600`}>
-                      {item.name.length > 18 ? (
-                        <Text>{item.name.substring(0, 18)}..</Text>
-                      ) : (
-                        <Text>{item.name}</Text>
-                      )}
-                    </Text>
-                    {/* <Text>{item.location}</Text> */}
-                  </View>
-                  <Button
-                    {...(following.includes(item.user._id)
-                      ? {
-                          //icon
-                          icon: (
-                            <Icon
-                              name="checkmark-circle"
-                              type="ionicon"
-                              color="white"
-                              size={20}
-                            />
-                          ),
-                          buttonStyle: tw`bg-green-600 rounded-lg p-2 ml-auto`,
-                          onPress: async () => {
-                            await dispatch(postFriend(item.user._id));
-                            setFollowChange(!followChange);
-                          },
-                        }
-                      : {
-                          //icon
-                          icon: (
-                            <Icon
-                              name="person-add"
-                              type="ionicon"
-                              color="white"
-                              size={20}
-                            />
-                          ),
-                          buttonStyle: tw`bg-blue-500 rounded-lg p-2 ml-auto`,
+        {/* 2 buttons side by side */}
+        <View style={tw`flex-row px-5 mb-2 items-center h-8`}>
+          <TouchableOpacity
+            onPress={() => setComponent('following')}
+            //slide in from left
+            style={tw`flex-1 h-full justify-center items-center rounded-l-lg ${
+              component === 'following' ? 'bg-blue-200' : 'bg-slate-200'
+            }`}>
+            <Text style={tw`font-bold`}>Following</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setComponent('explore')}
+            //slide in from left
+            style={tw`flex-1 h-full justify-center items-center ${
+              component === 'explore' ? 'bg-blue-200' : 'bg-slate-200'
+            }`}>
+            <Text style={tw`font-bold`}>All</Text>
+          </TouchableOpacity>
 
-                          onPress: async () => {
-                            await dispatch(postFriend(item.user._id));
-                            setFollowChange(!followChange);
-                          },
-                        })}
-                  />
-                  {/* <Button
+          <TouchableOpacity
+            onPress={() => setComponent('followers')}
+            //slide in from right
+            style={tw`flex-1 h-full justify-center items-center rounded-r-lg ${
+              component === 'followers' ? 'bg-blue-200' : 'bg-slate-200'
+            }`}>
+            <Text style={tw`font-bold`}>Followers</Text>
+          </TouchableOpacity>
+        </View>
+
+        {component === 'explore' ? (
+          <>
+            <View style={tw`px-5`}>
+              {data &&
+                data.user.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      style={tw`flex-row m-2 p-2 bg-slate-50 rounded-lg shadow-md items-center justify-between`}
+                      onPress={async () => {
+                        await dispatch(getProfileById(item?._id));
+                        navigation.navigate('SingleProfile', {
+                          id: id,
+                        });
+                      }}
+                      key={index}>
+                      <View style={tw`flex-row items-center`}>
+                        <Image
+                          source={{uri: item?.photoURL}}
+                          style={tw`w-10 h-10 rounded-xl mr-2`}
+                        />
+                        <Text style={tw`font-bold text-lg text-gray-600`}>
+                          {item.name.length > 18 ? (
+                            <Text>{item.name.substring(0, 18)}..</Text>
+                          ) : (
+                            <Text>{item.name}</Text>
+                          )}
+                        </Text>
+                        {/* <Text>{item.location}</Text> */}
+                      </View>
+                      <Button
+                        {...(following.includes(item._id)
+                          ? {
+                              //icon
+                              icon: (
+                                <Icon
+                                  name="checkmark-circle"
+                                  type="ionicon"
+                                  color="white"
+                                  size={20}
+                                />
+                              ),
+                              buttonStyle: tw`bg-green-600 rounded-lg p-2 ml-auto`,
+                              onPress: () => {
+                                dispatch(postFriend(item._id)).then(res => {
+                                  setFollowChange(!followChange);
+                                });
+                              },
+                            }
+                          : {
+                              //icon
+                              icon: (
+                                <Icon
+                                  name="person-add"
+                                  type="ionicon"
+                                  color="white"
+                                  size={20}
+                                />
+                              ),
+                              buttonStyle: tw`bg-blue-500 rounded-lg p-2 ml-auto`,
+
+                              onPress: () => {
+                                dispatch(postFriend(item._id)).then(res => {
+                                  setFollowChange(!followChange);
+                                });
+                              },
+                            })}
+                      />
+                      {/* <Button
                     icon={
                       <Icon
                         name="person-add"
@@ -138,11 +183,11 @@ const ExploreScreen = () => {
                       setFollowChange(!followChange);
                     }}
                   /> */}
-                </TouchableOpacity>
-              );
-            })}
+                    </TouchableOpacity>
+                  );
+                })}
 
-          {/* }
+              {/* }
                     icon={
                       <Icon
                         name="person-add-outline"
@@ -163,40 +208,46 @@ const ExploreScreen = () => {
                 </TouchableOpacity>
               );
             })} */}
-        </View>
-        {!search && (
-          <View style={tw`flex-row items-center justify-center mt-5`}>
-            {page > 1 && (
-              <TouchableOpacity
-                style={tw`rounded-full `}
-                onPress={() => setPage(page - 1)}>
-                <Icon
-                  name="arrow-back"
-                  type="ionicon"
-                  color="black"
-                  style={tw`p-2 bg-slate-200 rounded-xl`}
-                />
-              </TouchableOpacity>
+            </View>
+            {!search && (
+              <View style={tw`flex-row items-center justify-center mt-3`}>
+                {page > 1 && (
+                  <TouchableOpacity
+                    style={tw`rounded-full `}
+                    onPress={() => setPage(page - 1)}>
+                    <Icon
+                      name="arrow-back"
+                      type="ionicon"
+                      color="black"
+                      style={tw`p-2 bg-slate-200 rounded-xl`}
+                    />
+                  </TouchableOpacity>
+                )}
+                <Text style={tw`text-lg font-light mx-5`}>Page {page}</Text>
+                {page < data?.totalPages && (
+                  <TouchableOpacity
+                    style={tw`rounded-full`}
+                    onPress={() => setPage(page + 1)}>
+                    <Icon
+                      name="arrow-forward"
+                      type="ionicon"
+                      color="black"
+                      style={tw`p-2 bg-slate-200 rounded-xl mr-3`}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             )}
-            <Text style={tw`text-lg font-light mx-5`}>Page {page}</Text>
-            {page < data?.totalPages && (
-              <TouchableOpacity
-                style={tw`rounded-full`}
-                onPress={() => setPage(page + 1)}>
-                <Icon
-                  name="arrow-forward"
-                  type="ionicon"
-                  color="black"
-                  style={tw`p-2 bg-slate-200 rounded-xl mr-3`}
-                />
-              </TouchableOpacity>
+            {data?.user.length === 0 && (
+              <View style={tw`flex-1 items-center justify-center`}>
+                <Text style={tw`text-lg font-light`}>No Profiles Found</Text>
+              </View>
             )}
-          </View>
-        )}
-        {data?.profile.length === 0 && (
-          <View style={tw`flex-1 items-center justify-center`}>
-            <Text style={tw`text-lg font-light`}>No Profiles Found</Text>
-          </View>
+          </>
+        ) : component === 'followers' ? (
+          <Followers followers={followersData} id={id} />
+        ) : (
+          <Following following={followingData} id={id} />
         )}
       </ScrollView>
     </SafeAreaView>

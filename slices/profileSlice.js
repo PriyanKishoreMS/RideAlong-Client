@@ -8,7 +8,7 @@ export const postProfile = createAsyncThunk(
     var token = await AsyncStorage.getItem('token');
     // console.log(profiles, 'profiles from postProfile');
     console.log(token, 'token from profileSlice');
-    return await fetch(`http://${IP}/api/profile`, {
+    return await fetch(`http://192.168.1.17:5000/api/profile`, {
       method: 'POST',
       headers: {
         'auth-token': token,
@@ -36,7 +36,7 @@ export const getSingleUser = createAsyncThunk(
   async () => {
     var token = await AsyncStorage.getItem('token');
     // console.log(token, 'token from getSingleUser');
-    return await fetch(`http://${IP}/api/profile/me`, {
+    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -57,7 +57,7 @@ export const getMyProfile = createAsyncThunk(
   async () => {
     var token = await AsyncStorage.getItem('token');
     // console.log(token, 'token from getMyProfile');
-    return await fetch(`http://${IP}/api/profile/me`, {
+    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -77,7 +77,7 @@ export const getMyProfile = createAsyncThunk(
 export const getProfileById = createAsyncThunk(
   'profile/getProfileById',
   async id => {
-    return await fetch(`http://${IP}/api/profile/${id}`, {
+    return await fetch(`http://192.168.1.17:5000/api/profile/${id}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -90,30 +90,6 @@ export const getProfileById = createAsyncThunk(
         return data;
       })
       .catch(err => console.error(err, 'error from getProfileById'));
-  },
-);
-
-export const getAllProfiles = createAsyncThunk(
-  'profile/getAllProfiles',
-  async params => {
-    var token = await AsyncStorage.getItem('token');
-    console.log(params, 'page from getAllProfiles');
-    return await fetch(
-      `http://${IP}/api/profile?search=${params[0]}&page=${params[1]}`,
-      {
-        method: 'GET',
-        headers: {
-          'auth-token': token,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    )
-      .then(res => res.json())
-      .then(data => {
-        return data;
-      })
-      .catch(err => console.error(err, 'error from getAllProfiles'));
   },
 );
 
@@ -160,17 +136,6 @@ const profileSlice = createSlice({
       state.profile = [action.payload];
     },
     [getMyProfile.rejected]: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    [getAllProfiles.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getAllProfiles.fulfilled]: (state, action) => {
-      state.loading = false;
-      state.profile = action.payload;
-    },
-    [getAllProfiles.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

@@ -10,9 +10,62 @@ const auth = require('../../middleware/auth');
 // @desc    Test route
 // @access  Public
 
-router.get('/', async (req, res) => {
-  let users = await User.find();
-  res.send(users);
+// router.get('/', async (req, res) => {
+//   let users = await User.find();
+//   res.send(users);
+// });
+
+router.get('/', auth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 7;
+    const search = req.query.search || '';
+    let sort = req.query.sort || 'date';
+
+    req.query.sort ? (sort = req.query.sort.split(',')) : (sort = [sort]);
+
+    let sortBy = {};
+    if (sort[-1]) {
+      sortBy[sort[0]] = sort[-1];
+    } else {
+      sortBy[sort[0]] = 'desc';
+    }
+
+    //don't show the current user's profile
+    //
+    const user = await User.find({
+      name: {$regex: search, $options: 'i'},
+      user: {$ne: req.user.id},
+    })
+      .select('-following -followers -__v -uid -email -date')
+      .sort(sortBy)
+      .skip(page * limit)
+      .limit(limit);
+    // .populate('user', ['email', 'photoURL']);
+
+    const total = await User.countDocuments({
+      name: {$regex: search, $options: 'i'},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    const response = {
+      page: page + 1,
+      limit,
+      total,
+      totalPages,
+      user,
+    };
+
+    res.status(200).json(response);
+
+    // const user = await User.find()
+    //   .populate('user', ['name', 'photoURL'])
+    //   .sort({date: -1});
+    // res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 // @route POST api/users

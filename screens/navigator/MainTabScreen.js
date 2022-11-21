@@ -107,6 +107,8 @@ const MainTabScreen = () => {
               type="ionicon"
               color={color}
               size={26}
+              //on focused slanting
+              style={focused ? {transform: [{rotate: '15deg'}]} : null}
             />
           ),
         }}

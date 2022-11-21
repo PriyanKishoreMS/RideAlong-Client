@@ -12,9 +12,33 @@ const onValueChange = async (item, selectedValue) => {
   }
 };
 
+export const getAllUsers = createAsyncThunk(
+  'users/getAllUsers',
+  async params => {
+    var token = await AsyncStorage.getItem('token');
+    console.log(params, 'page from getAllUsers');
+    return await fetch(
+      `http://192.168.1.17:5000/api/users?search=${params[0]}&page=${params[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          'auth-token': token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then(res => res.json())
+      .then(data => {
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getAllUsers'));
+  },
+);
+
 export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
   // console.log(users, 'users from postUser');
-  return await fetch(`http://${IP}/api/users`, {
+  return await fetch(`http://192.168.1.17:5000/api/users`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -37,7 +61,7 @@ export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
 
 export const postFriend = createAsyncThunk('user/postFriend', async id => {
   var token = await AsyncStorage.getItem('token');
-  return await fetch(`http://${IP}/api/users/friend/${id}`, {
+  return await fetch(`http://192.168.1.17:5000/api/users/friend/${id}`, {
     method: 'PATCH',
     headers: {
       'auth-token': token,
@@ -66,6 +90,17 @@ const userSlice = createSlice({
     },
   },
   extraReducers: {
+    [getAllUsers.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getAllUsers.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+    },
+    [getAllUsers.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    },
     [postUser.pending]: (state, action) => {
       state.loading = true;
     },
