@@ -40,33 +40,20 @@ const HomeScreen = ({navigation}) => {
       </View>
       {userProfile && (
         //shadow style for the card
-        <View style={tw` rounded-xl bg-slate-200 w-full px-4 py-3`}>
+        <TouchableOpacity
+          style={tw` rounded-xl bg-white shadow-lg w-full px-4 py-3`}>
           <View style={tw`flex-row justify-between`}>
             <View>
-              <Text style={tw`text-xl font-semibold mb-2`}>
+              <Text style={tw`text-xl font-semibold`}>
                 {userProfile?.user?.name}
                 {/* {userProfile.name} */}
               </Text>
-              <Text style={tw`text-gray-500`}>
-                City: {userProfile?.location}
+              <Text style={tw` font-semibold text-xs mb-2`}>
+                {userInfo?.email}
               </Text>
-              <Text style={tw`text-gray-500`}>
-                DOB: {userProfile?.dob.substr(0, 10)}
-              </Text>
-              <Text style={tw`text-gray-500`}>
-                Mobile: {userProfile?.mobile}
-              </Text>
-              <Text style={tw`text-gray-500`}>
-                College: {userProfile?.college}
-              </Text>
+
               <Text style={tw`text-gray-500`}>
                 Vehicle: {userProfile?.vehicleType}
-              </Text>
-              <Text style={tw`text-gray-500`}>
-                Followers: {userProfile?.followers?.length}
-              </Text>
-              <Text style={tw`text-gray-500`}>
-                Following: {userProfile?.following?.length}
               </Text>
               {userProfile.vehicleType !== 'None' ? (
                 <>
@@ -79,7 +66,8 @@ const HomeScreen = ({navigation}) => {
                 </>
               ) : null}
             </View>
-            <View style={tw`flex-row items-center`}>
+            <View
+              style={tw`flex-row items-center border-2 rounded-full p-2 border-slate-300`}>
               <Image
                 source={{
                   uri: userInfo?.photoURL,
@@ -89,34 +77,71 @@ const HomeScreen = ({navigation}) => {
                   width: 100,
                   height: 100,
                   resizeMode: 'contain',
-                  borderRadius: 15,
+                  borderRadius: 100,
                 }}
               />
             </View>
           </View>
-          <View style={tw`flex-row justify-between items-center`}>
-            <Text style={tw` font-semibold`}>{userInfo?.email}</Text>
-            <View style={tw`flex-row items-center`}>
-              <Button
-                title="Logout"
-                onPress={() => logout()}
-                buttonStyle={tw`bg-red-700 rounded-xl`}
-              />
-            </View>
-          </View>
-        </View>
+        </TouchableOpacity>
       )}
       {/* <UpdateProfileCard /> */}
-      <TouchableOpacity
-        style={tw`flex-row justify-between bg-white w-full px-4 py-3 shadow-lg rounded-xl mt-5`}
-        onPress={() => navigation.navigate('UpdateProfile')}>
-        <View>
-          <Text style={tw`text-xl font-semibold`}>Update Profile</Text>
-        </View>
-        <View style={tw`flex-row items-center`}>
-          <Icon name="chevron-forward" size={30} color="gray" />
-        </View>
-      </TouchableOpacity>
+      <View
+        style={tw`rounded-xl shadow-lg bg-white px-4 pt-2 pb-1 w-full mt-5`}>
+        <TouchableOpacity
+          style={tw`flex-row justify-between bg-white w-full mb-2 mt-1`}
+          onPress={() => navigation.navigate('UpdateProfile')}>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Icon
+              name="refresh-circle-outline"
+              type="ionicon"
+              size={25}
+              color="#555"
+              style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
+            />
+            <Text style={tw`text-lg font-semibold`}>Update Profile</Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Icon name="chevron-forward" size={30} color="gray" />
+          </View>
+        </TouchableOpacity>
+        <View style={tw`border-b border-gray-300 w-full`}></View>
+        <TouchableOpacity
+          style={tw`flex-row justify-between bg-white w-full my-2`}
+          // onPress={() => navigation.navigate('UpdateProfile')}
+        >
+          <View style={tw`flex-row items-center justify-center`}>
+            <Icon
+              name="cog-outline"
+              type="ionicon"
+              size={25}
+              color="#555"
+              style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
+            />
+            <Text style={tw`text-lg font-semibold`}>Settings</Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Icon name="chevron-forward" size={30} color="gray" />
+          </View>
+        </TouchableOpacity>
+        <View style={tw`border-b border-gray-300 w-full`}></View>
+        <TouchableOpacity
+          style={tw`flex-row justify-between bg-white w-full my-2`}
+          onPress={() => logout()}>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Icon
+              name="log-out-outline"
+              type="ionicon"
+              size={25}
+              color="#555"
+              style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
+            />
+            <Text style={tw`text-lg font-semibold`}>Sign-out</Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Icon name="chevron-forward" size={30} color="gray" />
+          </View>
+        </TouchableOpacity>
+      </View>
       <View style={tw`h-1/4`} />
       <View style={tw`flex items-center`}>
         <Text style={tw`items-center text-5xl font-black mt-5 opacity-12.5`}>

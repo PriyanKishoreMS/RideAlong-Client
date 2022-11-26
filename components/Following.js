@@ -3,11 +3,21 @@ import React, {useEffect, useState} from 'react';
 import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
 import {getProfileById} from '../slices/profileSlice';
+import {getMyFollowing} from '../slices/userSlice';
 import {useNavigation} from '@react-navigation/native';
 
-const Following = ({following, id}) => {
+const Following = ({id}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [following, setFollowing] = useState([]);
+
+  useEffect(() => {
+    dispatch(getMyFollowing()).then(res => {
+      setFollowing(res.payload);
+    });
+    // console.log(following, 'following');
+  }, []);
+
   return (
     <View style={tw`px-5`}>
       {following?.map((following, index) => (

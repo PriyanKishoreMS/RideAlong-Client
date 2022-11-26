@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Ride = require('../../models/Ride');
+const InactiveRide = require('../../models/InactiveRide');
 const User = require('../../models/User');
 const auth = require('../../middleware/auth');
+const cron = require('node-cron');
 
 // @route   POST api/ride/
 // @desc    Create or update user ride
@@ -16,8 +18,7 @@ router.post('/', auth, async (req, res) => {
     'active',
     'source',
     'destination',
-    'date',
-    'time',
+    'timestamp',
     'seats',
     'price',
     'vehicleType',
@@ -53,7 +54,7 @@ router.post('/', auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const rides = await Ride.find()
-      .sort({date: 1})
+      .sort({timestamp: 1})
       .populate('user', ['name', 'photoURL']);
     res.json(rides);
   } catch (err) {
@@ -84,6 +85,22 @@ router.get('/following', auth, async (req, res) => {
       .sort({date: 1})
       .populate('user', ['name', 'photoURL']);
     res.json(rides);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+cron.schedule('0 */12 * * *', async () => {
+  try {
+    const rides = await Ride.find({timestamp: {$lt: Date.now()}});
+    rides.forEach(async ride => {
+      const inactiveride = new InactiveRide(ride);
+      inactiveride.isNew = true;
+      await inactiveride.save();
+      await Ride.findByIdAndRemove(ride._id);
+    });
+    console.log('Rides updated');
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

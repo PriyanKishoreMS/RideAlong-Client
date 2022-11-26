@@ -11,6 +11,7 @@ import React, {useEffect, useState} from 'react';
 import MenuButton from '../components/MenuButton';
 import tw from 'twrnc';
 import {useSelector, useDispatch} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import {getAllRides} from '../slices/rideSlice';
 import {Icon} from 'react-native-elements';
 
@@ -22,6 +23,12 @@ const RideScreen = () => {
   useEffect(() => {
     dispatch(getAllRides()).then(res => setRides(res.payload));
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getAllRides()).then(res => setRides(res.payload));
+    }, []),
+  );
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
@@ -70,10 +77,20 @@ const RideScreen = () => {
                     </View>
                     <View style={tw`flex pr-1`}>
                       <Text style={tw`text-lg font-bold text-right`}>
-                        {ride.date.substr(0, 10)}
+                        {new Date(ride.timestamp)
+                          .toUTCString()
+                          .substring(0, 11)}
                       </Text>
                       <Text style={tw`text-sm text-right`}>
-                        {ride.time.substr(16, 5)}
+                        {new Date(ride.timestamp)
+                          .toLocaleTimeString()
+                          .split(':')
+                          .slice(0, 2)
+                          .join(':')}
+                        {new Date(ride.timestamp)
+                          .toLocaleTimeString()
+                          //split the time string at the second colon
+                          .substring(8, 11)}
                       </Text>
                     </View>
                   </View>

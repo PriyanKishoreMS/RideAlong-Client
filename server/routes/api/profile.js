@@ -64,22 +64,9 @@ router.get('/me', auth, async (req, res) => {
       return res.status(400).json({msg: 'Profile not found'});
     }
 
-    const following = profile.user.following;
-    const followers = profile.user.followers;
-
-    const followingProfiles = await User.find({
-      _id: {$in: following},
-    }).select('name photoURL');
-
-    const followersProfiles = await User.find({
-      _id: {$in: followers},
-    }).select('name photoURL');
-
     const response = {
       profile,
       rides,
-      followingProfiles,
-      followersProfiles,
     };
 
     res.json(response);
@@ -108,22 +95,22 @@ router.get('/:id', async (req, res) => {
       return res.status(400).json({msg: 'Profile not found'});
     }
 
-    const following = profile.user.following;
-    const followers = profile.user.followers;
+    // const following = profile.user.following;
+    // const followers = profile.user.followers;
 
-    const followingProfiles = await User.find({
-      _id: {$in: following},
-    }).select('name photoURL');
+    // const followingProfiles = await User.find({
+    //   _id: {$in: following},
+    // }).select('name photoURL');
 
-    const followersProfiles = await User.find({
-      _id: {$in: followers},
-    }).select('name photoURL');
+    // const followersProfiles = await User.find({
+    //   _id: {$in: followers},
+    // }).select('name photoURL');
 
     const response = {
       profile,
       rides,
-      followingProfiles,
-      followersProfiles,
+      // followingProfiles,
+      // followersProfiles,
     };
 
     res.json(response);

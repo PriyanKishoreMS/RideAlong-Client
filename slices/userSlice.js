@@ -18,7 +18,7 @@ export const getAllUsers = createAsyncThunk(
     var token = await AsyncStorage.getItem('token');
     console.log(params, 'page from getAllUsers');
     return await fetch(
-      `http://192.168.1.17:5000/api/users?search=${params[0]}&page=${params[1]}`,
+      `http://${IP}/api/users?search=${params[0]}&page=${params[1]}`,
       {
         method: 'GET',
         headers: {
@@ -38,7 +38,7 @@ export const getAllUsers = createAsyncThunk(
 
 export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
   // console.log(users, 'users from postUser');
-  return await fetch(`http://192.168.1.17:5000/api/users`, {
+  return await fetch(`http://${IP}/api/users`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -61,7 +61,7 @@ export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
 
 export const postFriend = createAsyncThunk('user/postFriend', async id => {
   var token = await AsyncStorage.getItem('token');
-  return await fetch(`http://192.168.1.17:5000/api/users/friend/${id}`, {
+  return await fetch(`http://${IP}/api/users/friend/${id}`, {
     method: 'PATCH',
     headers: {
       'auth-token': token,
@@ -71,11 +71,53 @@ export const postFriend = createAsyncThunk('user/postFriend', async id => {
   })
     .then(res => res.json())
     .then(data => {
-      console.log(data, 'data from postFriend');
+      // console.log(data, 'data from postFriend');
       return data;
     })
     .catch(err => console.error(err, 'error from postFriend'));
 });
+
+export const getMyFollowing = createAsyncThunk(
+  'user/getMyFollowing',
+  async () => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/users/me/following`, {
+      method: 'GET',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data, 'data from getMyFollowing');
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getMyFollowing'));
+  },
+);
+
+export const getMyFollowers = createAsyncThunk(
+  'user/getMyFollowers',
+  async () => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/users/me/followers`, {
+      method: 'GET',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data, 'data from getMyFollowers');
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getMyFollowers'));
+  },
+);
 
 const userSlice = createSlice({
   name: 'user',
@@ -120,6 +162,28 @@ const userSlice = createSlice({
       state.profile = action.payload;
     },
     [postFriend.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getMyFollowing.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyFollowing.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getMyFollowing.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getMyFollowers.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyFollowers.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getMyFollowers.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

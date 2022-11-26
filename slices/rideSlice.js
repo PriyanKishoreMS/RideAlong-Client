@@ -5,7 +5,7 @@ import {IP} from '@env';
 export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
   var token = await AsyncStorage.getItem('token');
   console.log(rides, 'rides from postRide');
-  return await fetch(`http://192.168.1.17:5000/api/ride`, {
+  return await fetch(`http://${IP}/api/ride`, {
     method: 'POST',
     headers: {
       'auth-token': token,
@@ -14,8 +14,7 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
     },
     body: JSON.stringify({
       active: rides.active,
-      date: rides.date,
-      time: rides.time,
+      timestamp: rides.timestamp,
       source: rides.source,
       destination: rides.destination,
       distance: rides.distance,
@@ -32,7 +31,7 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
 });
 
 export const getAllRides = createAsyncThunk('ride/getAllRides', async () => {
-  return await fetch(`http://192.168.1.17:5000/api/ride`, {
+  return await fetch(`http://${IP}/api/ride`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

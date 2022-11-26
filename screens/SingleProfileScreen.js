@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import tw from 'twrnc';
 import {Button, Icon} from 'react-native-elements';
 import {postFriend} from '../slices/userSlice';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SingleProfileScreen = ({route, navigation}) => {
   const {id} = route.params;
@@ -12,15 +13,17 @@ const SingleProfileScreen = ({route, navigation}) => {
   const [profile, setProfile] = useState(null);
   const [followChange, setFollowChange] = useState(false);
 
-  const profileData = useSelector(state => state.profile.profile);
+  var profileData = useSelector(state => state.profile.profile);
+  const {user} = useSelector(state => ({...state.user}));
   useEffect(() => {
     setProfile(profileData);
+    console.log(user, 'user from single profile');
   }, [profileData, followChange]);
 
   return (
     <SafeAreaView>
       <BackButton navigation={navigation} />
-      {profile && (
+      {profile ? (
         //create card component
         <ScrollView>
           <View
@@ -30,10 +33,10 @@ const SingleProfileScreen = ({route, navigation}) => {
               style={tw`w-32 h-32 rounded-full`}
             />
             <Text style={tw`text-2xl font-bold text-gray-700`}>
-              {profile?.profile?.user.name}
+              {profile?.profile?.user?.name}
             </Text>
             <Text style={tw`text-lg text-gray-600`}>
-              {profile?.profile?.user.email}
+              {profile?.profile?.user?.email}
             </Text>
             <Text style={tw`text-lg text-gray-600`}>
               {profile?.profile?.college}
@@ -101,7 +104,7 @@ const SingleProfileScreen = ({route, navigation}) => {
           <Text style={tw`text-lg text-gray-700 px-3 mt-3`}>
             {profile?.profile?.vehicleModel}
           </Text>
-          {profile.rides.map(ride => (
+          {profile?.rides?.map(ride => (
             <View
               key={ride._id}
               style={tw`flex flex-col items-center justify-center bg-gray-200 py-10 mx-3 mt-3 rounded-xl`}>
@@ -112,14 +115,13 @@ const SingleProfileScreen = ({route, navigation}) => {
                 {ride.destination}
               </Text>
               <Text style={tw`text-lg text-gray-700 px-3 mt-3`}>
-                {ride.date}
-              </Text>
-              <Text style={tw`text-lg text-gray-700 px-3 mt-3`}>
-                {ride.time}
+                {ride.timestamp}
               </Text>
             </View>
           ))}
         </ScrollView>
+      ) : (
+        <Text>Loading...</Text>
       )}
     </SafeAreaView>
   );

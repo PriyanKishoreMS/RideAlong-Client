@@ -121,6 +121,40 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/me/following', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    const following = user.following;
+
+    const followingProfiles = await User.find({
+      _id: {$in: following},
+    }).select('name photoURL');
+
+    res.json(followingProfiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.get('/me/followers', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    const followers = user.followers;
+
+    const followersProfiles = await User.find({
+      _id: {$in: followers},
+    }).select('name photoURL');
+
+    res.json(followersProfiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 router.patch('/friend/:id', auth, async (req, res) => {
   try {
     const profile = await User.findById(req.user.id);

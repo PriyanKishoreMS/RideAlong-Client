@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect, useContext} from 'react';
 import tw from 'twrnc';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
@@ -14,19 +14,36 @@ export function DrawerContent(props) {
   return (
     <View style={tw`flex-1`}>
       <DrawerContentScrollView {...props}>
-        <View
-          style={tw`flex flex-col items-center justify-center bg-gray-200 py-10 mx-3 mt-3 rounded-xl`}>
+        <View style={tw`flex-row items-center mx-3 mt-5 rounded-xl`}>
           <Avatar.Image
             source={{
               uri: userInfo?.photoURL,
             }}
-            size={100}
+            size={50}
           />
-          <Title style={tw`text-black text-xl mt-3`}>
-            {userInfo?.displayName}
-          </Title>
-          <Caption style={tw`text-base`}>{userInfo?.email}</Caption>
+          <View style={tw`ml-3`}>
+            <Title style={tw`text-black text-xl`}>
+              {userInfo?.displayName}
+            </Title>
+            <Caption style={tw`text-xs`}>{userInfo?.email}</Caption>
+          </View>
         </View>
+        <View style={tw`mt-5`}>
+          {/* follower and following count */}
+          <View style={tw`flex-row `}>
+            <TouchableOpacity
+              style={tw`flex-1 flex-row justify-center items-center`}>
+              <Text style={tw`text-black text-xl pr-2`}>785</Text>
+              <Caption style={tw`text-sm`}>Followers</Caption>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`flex-1 flex-row justify-center items-center`}>
+              <Text style={tw`text-black text-xl pr-2`}>456</Text>
+              <Caption style={tw`text-sm`}>Following</Caption>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={tw`border-b border-gray-300 mt-5`} />
         <Drawer.Section style={tw`mt-10`}>
           <DrawerItem
             icon={({color, size}) => (

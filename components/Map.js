@@ -21,6 +21,11 @@ const Map = () => {
     mapRef.current.fitToSuppliedMarkers(['origin', 'destination'], {
       edgePadding: {top: 50, right: 50, bottom: 50, left: 50},
     });
+    setTimeout(() => {
+      mapRef.current.fitToSuppliedMarkers(['origin', 'destination'], {
+        edgePadding: {top: 50, right: 50, bottom: 50, left: 50},
+      });
+    }, 500);
   }, [origin, destination]);
 
   useEffect(() => {
@@ -35,7 +40,6 @@ const Map = () => {
           dispatch(setTravelTimeInformation(data.rows[0].elements[0]));
         });
     };
-
     getTravelTime();
   }, [origin, destination, GOOGLEMAPS_API_KEY]);
 

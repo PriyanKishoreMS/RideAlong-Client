@@ -7,11 +7,11 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import tw from 'twrnc';
-import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {Button, Icon} from 'react-native-elements';
 import MenuButton from '../components/MenuButton';
 import {getAllUsers} from '../slices/userSlice';
@@ -23,7 +23,6 @@ import Followers from '../components/Followers';
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
-  const refresh = useIsFocused();
   const dispatch = useDispatch();
   const [data, setData] = useState();
   const [search, setSearch] = useState('');
@@ -55,11 +54,19 @@ const ExploreScreen = () => {
       .then(res => {
         setId(res.payload?.profile?.user?._id);
         setFollowing(res.payload?.profile?.user?.following);
-        setFollowersData(res.payload?.followersProfiles);
-        setFollowingData(res.payload?.followingProfiles);
       })
       .catch(err => console.log(err));
   }, [followChange]);
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getMyProfile())
+        .then(res => {
+          setFollowing(res.payload?.profile?.user?.following);
+        })
+        .catch(err => console.log(err));
+    }, []),
+  );
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
@@ -245,9 +252,9 @@ const ExploreScreen = () => {
             )}
           </>
         ) : component === 'followers' ? (
-          <Followers followers={followersData} id={id} />
+          <Followers id={id} />
         ) : (
-          <Following following={followingData} id={id} />
+          <Following id={id} />
         )}
       </ScrollView>
     </SafeAreaView>

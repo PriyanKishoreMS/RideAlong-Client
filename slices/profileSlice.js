@@ -8,7 +8,7 @@ export const postProfile = createAsyncThunk(
     var token = await AsyncStorage.getItem('token');
     // console.log(profiles, 'profiles from postProfile');
     console.log(token, 'token from profileSlice');
-    return await fetch(`http://192.168.1.17:5000/api/profile`, {
+    return await fetch(`http://${IP}/api/profile`, {
       method: 'POST',
       headers: {
         'auth-token': token,
@@ -36,7 +36,7 @@ export const getSingleUser = createAsyncThunk(
   async () => {
     var token = await AsyncStorage.getItem('token');
     // console.log(token, 'token from getSingleUser');
-    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
+    return await fetch(`http://${IP}/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -57,7 +57,7 @@ export const getMyProfile = createAsyncThunk(
   async () => {
     var token = await AsyncStorage.getItem('token');
     // console.log(token, 'token from getMyProfile');
-    return await fetch(`http://192.168.1.17:5000/api/profile/me`, {
+    return await fetch(`http://${IP}/api/profile/me`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -77,7 +77,7 @@ export const getMyProfile = createAsyncThunk(
 export const getProfileById = createAsyncThunk(
   'profile/getProfileById',
   async id => {
-    return await fetch(`http://192.168.1.17:5000/api/profile/${id}`, {
+    return await fetch(`http://${IP}/api/profile/${id}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

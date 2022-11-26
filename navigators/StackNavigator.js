@@ -20,6 +20,7 @@ const LoginStack = createStackNavigator();
 const StackNavigator = () => {
   const {user, setUser} = useContext(AuthContext);
   const {profile, setProfile} = useContext(AuthContext);
+  const [userProfile, setUserProfile] = useState('');
   const [initializing, setInitializing] = useState(true);
 
   const dispatch = useDispatch();
@@ -40,8 +41,9 @@ const StackNavigator = () => {
     //     setProfile(false);
     //   }
     // });
-    dispatch(getMyProfile());
-    console.log(profile);
+    dispatch(getMyProfile()).then(res => {
+      setUserProfile(res.payload);
+    });
   }, [user]);
 
   if (initializing) return null;

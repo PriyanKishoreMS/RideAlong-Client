@@ -17,6 +17,7 @@ babel.config.js
 metro.config.js
 .node-version
 .vscode
+/slices/config.js
 
 # Xcode
 #

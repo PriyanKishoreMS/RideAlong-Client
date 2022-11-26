@@ -36,12 +36,14 @@ const LoginScreen = () => {
         photoURL: userInfo.photoURL,
       };
       await dispatch(postUser({users}));
-      dispatch(getSingleUser()).then(res => {
-        if (res.payload == 200) {
-          dispatch(getSingleProfile());
-          setProfile(false);
-        } else setProfile(true);
-      });
+      dispatch(getSingleUser())
+        .then(res => {
+          if (res.payload == 200) {
+            dispatch(getSingleProfile());
+            setProfile(false);
+          } else setProfile(true);
+        })
+        .catch(err => console.log(err));
     } catch (error) {
       console.log(error);
     }

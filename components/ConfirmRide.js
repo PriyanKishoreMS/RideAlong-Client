@@ -53,6 +53,19 @@ const ConfirmRide = ({navigation}) => {
     vehicleModel: '',
   });
 
+  //covert date and time to one timestamp
+  const convertDateTime = (date, time) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+
+    const dateTime = new Date(`${year}-${month}-${day} ${hour}:${minute}:00`);
+
+    return dateTime;
+  };
+
   const handleRideSubmit = async () => {
     if (
       state.time == '' ||
@@ -66,26 +79,28 @@ const ConfirmRide = ({navigation}) => {
       state.vehicleNumber == undefined ||
       state.vehicleModel == undefined
     ) {
+      console.log(convertDateTime(state.date, state.time));
       alert('Please fill all the fields');
-    }
-    try {
-      const rides = {
-        active: state.active,
-        date: state.date.toString(),
-        time: state.time.toString(),
-        source: state.origin,
-        destination: state.destination,
-        seats: state.seats,
-        price: state.price,
-        vehicleType: state.vehicleType,
-        vehicleNumber: state.vehicleNumber,
-        vehicleModel: state.vehicleModel,
-      };
-      await dispatch(postRide({rides}));
-      navigation.popToTop();
-      navigation.popToTop();
-    } catch (err) {
-      console.log(err, 'error from confirm ride');
+    } else {
+      try {
+        const rides = {
+          active: state.active,
+          timestamp: convertDateTime(state.date, state.time).toString(),
+          source: state.origin,
+          destination: state.destination,
+          seats: state.seats,
+          price: state.price,
+          vehicleType: state.vehicleType,
+          vehicleNumber: state.vehicleNumber,
+          vehicleModel: state.vehicleModel,
+        };
+        await dispatch(postRide({rides}));
+        // navigation.popToTop();
+        // navigation.popToTop();
+        navigation.navigate('Ride');
+      } catch (err) {
+        console.log(err, 'error from confirm ride');
+      }
     }
   };
 

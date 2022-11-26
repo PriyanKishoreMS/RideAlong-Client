@@ -111,6 +111,7 @@ const MainTabScreen = () => {
               style={focused ? {transform: [{rotate: '15deg'}]} : null}
             />
           ),
+          tabBarBadge: 5,
         }}
       />
       <Tab.Screen
