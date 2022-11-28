@@ -95,8 +95,8 @@ const ConfirmRide = ({navigation}) => {
           vehicleModel: state.vehicleModel,
         };
         await dispatch(postRide({rides}));
-        // navigation.popToTop();
-        // navigation.popToTop();
+        navigation.popToTop();
+        navigation.popToTop();
         navigation.navigate('Ride');
       } catch (err) {
         console.log(err, 'error from confirm ride');

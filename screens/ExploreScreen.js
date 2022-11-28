@@ -29,8 +29,6 @@ const ExploreScreen = () => {
   const [page, setPage] = useState(1);
   const [id, setId] = useState('');
   const [following, setFollowing] = useState([]);
-  const [followingData, setFollowingData] = useState([]);
-  const [followersData, setFollowersData] = useState([]);
   const [followChange, setFollowChange] = useState(false);
   const [component, setComponent] = useState('following');
 
@@ -143,13 +141,13 @@ const ExploreScreen = () => {
                               //icon
                               icon: (
                                 <Icon
-                                  name="checkmark-circle"
+                                  name="checkmark"
                                   type="ionicon"
-                                  color="white"
+                                  color="green"
                                   size={20}
                                 />
                               ),
-                              buttonStyle: tw`bg-green-600 rounded-lg p-2 ml-auto`,
+                              buttonStyle: tw`bg-green-100 rounded-lg ml-auto`,
                               onPress: () => {
                                 dispatch(postFriend(item._id)).then(res => {
                                   setFollowChange(!followChange);
@@ -160,13 +158,13 @@ const ExploreScreen = () => {
                               //icon
                               icon: (
                                 <Icon
-                                  name="person-add"
+                                  name="add-outline"
                                   type="ionicon"
-                                  color="white"
+                                  color="blue"
                                   size={20}
                                 />
                               ),
-                              buttonStyle: tw`bg-blue-500 rounded-lg p-2 ml-auto`,
+                              buttonStyle: tw`bg-blue-100 rounded-lg ml-auto`,
 
                               onPress: () => {
                                 dispatch(postFriend(item._id)).then(res => {

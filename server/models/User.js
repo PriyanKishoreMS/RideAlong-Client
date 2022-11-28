@@ -31,6 +31,18 @@ const UserSchema = new mongoose.Schema({
       ref: 'user',
     },
   ],
+  ridesCreated: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ride',
+    },
+  ],
+  ridesJoined: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ride',
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,

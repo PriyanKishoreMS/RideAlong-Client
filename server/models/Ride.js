@@ -43,9 +43,17 @@ const RideSchema = new Schema({
   },
   passengers: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      status: {
+        type: Number,
+        enum: [0, 1, 2],
+        default: 0,
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      },
     },
+    {timestamps: true},
   ],
 });
 
