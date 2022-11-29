@@ -13,9 +13,10 @@ import tw from 'twrnc';
 import {useSelector, useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {getAllRides} from '../slices/rideSlice';
+import {getRideById} from '../slices/rideSlice';
 import {Icon} from 'react-native-elements';
 
-const RideScreen = () => {
+const RideScreen = ({navigation}) => {
   const [rides, setRides] = useState();
 
   const dispatch = useDispatch();
@@ -46,6 +47,11 @@ const RideScreen = () => {
               return (
                 <TouchableOpacity
                   key={index}
+                  onPress={async () => {
+                    await dispatch(getRideById(ride._id)).then(res =>
+                      navigation.navigate('SingleRide'),
+                    );
+                  }}
                   style={tw`bg-white p-3 rounded-xl shadow-xl w-full mb-3`}>
                   <View style={tw`flex-row justify-between`}>
                     <View style={tw`flex-row items-center`}>

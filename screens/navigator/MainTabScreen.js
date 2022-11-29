@@ -11,10 +11,12 @@ import UpdateProfileScreen from '../UpdateProfileScreen';
 import SingleProfileScreen from '../SingleProfileScreen';
 import RideScreen from '../RideScreen';
 import NotificationScreen from '../NotificationScreen';
+import SingleRideScreen from '../SingleRideScreen';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const RideStack = createStackNavigator();
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -83,7 +85,7 @@ const MainTabScreen = () => {
       />
       <Tab.Screen
         name="Ride"
-        component={RideScreen}
+        component={RideStackScreen}
         options={{
           tabBarLabel: 'Rides',
           tabBarIcon: ({color, focused}) => (
@@ -184,6 +186,22 @@ const ExploreStackComponent = () => {
   );
 };
 
+const RideStackComponent = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="RideStack"
+        component={RideScreen}
+        options={{headerShown: false}}></Stack.Screen>
+      <Stack.Screen
+        name="SingleRide"
+        component={SingleRideScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen
@@ -202,6 +220,16 @@ const ExploreStackScreen = () => (
       options={{headerShown: false}}
     />
   </ExploreStack.Navigator>
+);
+
+const RideStackScreen = () => (
+  <RideStack.Navigator>
+    <RideStack.Screen
+      name="RideStackScreen"
+      component={RideStackComponent}
+      options={{headerShown: false}}
+    />
+  </RideStack.Navigator>
 );
 
 const ProfileStackScreen = () => (

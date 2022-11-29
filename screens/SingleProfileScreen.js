@@ -5,20 +5,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import tw from 'twrnc';
 import {Button, Icon} from 'react-native-elements';
 import {postFriend} from '../slices/userSlice';
-import {useFocusEffect} from '@react-navigation/native';
 
 const SingleProfileScreen = ({route, navigation}) => {
   const {id} = route.params;
   const dispatch = useDispatch();
   const [profile, setProfile] = useState(null);
-  const [followChange, setFollowChange] = useState(false);
+  const [follow, setFollow] = useState(false);
 
   var profileData = useSelector(state => state.profile.profile);
-  const {user} = useSelector(state => ({...state.user}));
   useEffect(() => {
     setProfile(profileData);
-    console.log(user, 'user from single profile');
-  }, [profileData, followChange]);
+    profile?.profile?.user?.followers.includes(id)
+      ? setFollow(true)
+      : setFollow(false);
+    console.log(profileData, 'profileData');
+  }, [profileData]);
 
   return (
     <SafeAreaView>
@@ -50,13 +51,13 @@ const SingleProfileScreen = ({route, navigation}) => {
               </Text>
             </View>
             <Button
-              {...(profile?.profile?.user?.followers.includes(id)
+              {...(follow === true
                 ? {
                     title: 'Unfollow',
                     onPress: () => {
                       dispatch(postFriend(profile?.profile?.user?._id)).then(
                         res => {
-                          setFollowChange(!followChange);
+                          setFollow(!follow);
                         },
                       );
                     },
@@ -67,7 +68,7 @@ const SingleProfileScreen = ({route, navigation}) => {
                     onPress: () => {
                       dispatch(postFriend(profile?.profile?.user?._id)).then(
                         res => {
-                          setFollowChange(!followChange);
+                          setFollow(!follow);
                         },
                       );
                     },

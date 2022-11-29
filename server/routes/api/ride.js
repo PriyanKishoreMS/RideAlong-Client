@@ -17,6 +17,10 @@ router.post('/', auth, async (req, res) => {
   const standardFields = [
     'source',
     'destination',
+    'sourceLat',
+    'sourceLng',
+    'destinationLat',
+    'destinationLng',
     'timestamp',
     'seats',
     'price',
@@ -69,11 +73,11 @@ router.get('/', async (req, res) => {
 });
 
 // get all rides by user
-router.get('/user', auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   try {
     const rides = await Ride.find({user: req.user.id})
       .sort({date: 1})
-      .populate('user', ['name', 'photoURL', 'following']);
+      .populate('user', ['name', 'photoURL']);
     res.json(rides);
   } catch (err) {
     console.error(err.message);
@@ -112,10 +116,30 @@ cron.schedule('0 */12 * * *', async () => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id).populate('user', [
+      'name',
+      'photoURL',
+    ]);
+    if (!ride) {
+      return res.status(404).json({msg: 'Ride not found'});
+    }
+    res.json(ride);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({msg: 'Ride not found'});
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 // passenger requests to join ride
 router.patch('/passenger/:id', auth, async (req, res) => {
   try {
     const ride = await Ride.findById(req.params.id);
+    const user = await User.findById(req.user.id);
 
     if (ride.user.toString() === req.user.id) {
       return res.status(400).json({msg: 'You cannot join your own ride'});
@@ -132,7 +156,9 @@ router.patch('/passenger/:id', auth, async (req, res) => {
       });
     }
     ride.passengers.push({user: req.user.id, status: 1});
+    user.ridesJoined.push(ride._id);
     await ride.save();
+    await user.save();
     res.json(ride);
   } catch (err) {
     console.error(err.message);
@@ -141,9 +167,20 @@ router.patch('/passenger/:id', auth, async (req, res) => {
 });
 
 //approve passenger request
-router.patch('/passenger/:id/:passengerId/approve', auth, async (req, res) => {
+router.patch('/passenger/:id/:passengerId/accept', auth, async (req, res) => {
   try {
     const ride = await Ride.findById(req.params.id);
+
+    //check if request exists
+    if (
+      ride.passengers.filter(
+        passenger => passenger.user.toString() === req.params.passengerId,
+      ).length === 0
+    ) {
+      return res.status(400).json({
+        msg: 'Request does not exist',
+      });
+    }
 
     // get passenger index
     const passengerIndex = ride.passengers
@@ -151,6 +188,7 @@ router.patch('/passenger/:id/:passengerId/approve', auth, async (req, res) => {
       .indexOf(req.params.passengerId);
 
     ride.passengers[passengerIndex].status = 2;
+    ride.seats -= 1;
     await ride.save();
     res.json(ride);
   } catch (err) {
@@ -163,14 +201,16 @@ router.patch('/passenger/:id/:passengerId/approve', auth, async (req, res) => {
 router.patch('/passenger/:id/:passengerId/reject', auth, async (req, res) => {
   try {
     const ride = await Ride.findById(req.params.id);
-
+    const user = await User.findById(req.params.passengerId);
     // get passenger index
     const passengerIndex = ride.passengers
       .map(passenger => passenger.user.toString())
       .indexOf(req.params.passengerId);
 
     ride.passengers.splice(passengerIndex, 1);
+    user.ridesJoined.splice(user.ridesJoined.indexOf(ride._id), 1);
     await ride.save();
+    await user.save();
     res.json(ride);
   } catch (err) {
     console.error(err.message);

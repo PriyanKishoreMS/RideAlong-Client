@@ -4,7 +4,7 @@ import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
 import {getProfileById} from '../slices/profileSlice';
 import {getMyFollowing} from '../slices/userSlice';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const Following = ({id}) => {
   const navigation = useNavigation();
@@ -17,6 +17,14 @@ const Following = ({id}) => {
     });
     // console.log(following, 'following');
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getMyFollowing()).then(res => {
+        setFollowing(res.payload);
+      });
+    }, []),
+  );
 
   return (
     <View style={tw`px-5`}>

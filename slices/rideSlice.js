@@ -17,7 +17,10 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
       timestamp: rides.timestamp,
       source: rides.source,
       destination: rides.destination,
-      distance: rides.distance,
+      sourceLat: rides.sourceLat,
+      sourceLng: rides.sourceLng,
+      destinationLat: rides.destinationLat,
+      destinationLng: rides.destinationLng,
       seats: rides.seats,
       price: rides.price,
       vehicleType: rides.vehicleType,
@@ -41,6 +44,57 @@ export const getAllRides = createAsyncThunk('ride/getAllRides', async () => {
     .then(res => res.json())
     .catch(err => console.log(err, 'error from rideSlice'));
 });
+
+export const getRideById = createAsyncThunk('ride/getRideById', async id => {
+  console.log(id, 'id from getRideById');
+  return await fetch(`http://${IP}/api/ride/${id}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      const res = {
+        data: data,
+        id: id,
+      };
+      return res;
+    })
+    .catch(err => console.log(err, 'error from rideSlice'));
+});
+
+export const getMyRides = createAsyncThunk('ride/getMyRides', async () => {
+  var token = await AsyncStorage.getItem('token');
+  return await fetch(`http://${IP}/api/ride/me`, {
+    method: 'GET',
+    headers: {
+      'auth-token': token,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err, 'error from rideSlice'));
+});
+
+export const getFollowingRides = createAsyncThunk(
+  'ride/getFollowingRides',
+  async () => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/ride/following`, {
+      method: 'GET',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err, 'error from rideSlice'));
+  },
+);
 
 const rideSlice = createSlice({
   name: 'ride',
@@ -74,6 +128,39 @@ const rideSlice = createSlice({
       state.ride = action.payload;
     },
     [getAllRides.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getRideById.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getRideById.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.ride = action.payload;
+    },
+    [getRideById.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getMyRides.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyRides.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.ride = action.payload;
+    },
+    [getMyRides.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getFollowingRides.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getFollowingRides.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.ride = action.payload;
+    },
+    [getFollowingRides.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

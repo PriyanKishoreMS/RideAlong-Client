@@ -14,8 +14,24 @@ const RideSchema = new Schema({
     type: String,
     required: true,
   },
+  sourceLat: {
+    type: Number,
+    required: true,
+  },
+  sourceLng: {
+    type: Number,
+    required: true,
+  },
   destination: {
     type: String,
+    required: true,
+  },
+  destinationLat: {
+    type: Number,
+    required: true,
+  },
+  destinationLng: {
+    type: Number,
     required: true,
   },
   seats: {
