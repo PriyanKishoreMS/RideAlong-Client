@@ -96,6 +96,20 @@ export const getFollowingRides = createAsyncThunk(
   },
 );
 
+export const deleteRide = createAsyncThunk('ride/deleteRide', async id => {
+  var token = await AsyncStorage.getItem('token');
+  return await fetch(`http://${IP}/api/ride/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'auth-token': token,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err, 'error from rideSlice'));
+});
+
 const rideSlice = createSlice({
   name: 'ride',
   initialState: {
@@ -161,6 +175,17 @@ const rideSlice = createSlice({
       state.ride = action.payload;
     },
     [getFollowingRides.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [deleteRide.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteRide.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.ride = action.payload;
+    },
+    [deleteRide.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

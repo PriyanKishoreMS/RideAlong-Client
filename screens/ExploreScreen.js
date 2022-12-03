@@ -17,7 +17,8 @@ import MenuButton from '../components/MenuButton';
 import {getAllUsers} from '../slices/userSlice';
 import {getProfileById} from '../slices/profileSlice';
 import {postFriend} from '../slices/userSlice';
-import {getMyProfile} from '../slices/profileSlice';
+// import {getMyProfile} from '../slices/profileSlice';
+import {getMyUser} from '../slices/userSlice';
 import Following from '../components/Following';
 import Followers from '../components/Followers';
 
@@ -48,21 +49,17 @@ const ExploreScreen = () => {
   }, [search, page]);
 
   useEffect(() => {
-    dispatch(getMyProfile())
-      .then(res => {
-        setId(res.payload?.profile?.user?._id);
-        setFollowing(res.payload?.profile?.user?.following);
-      })
-      .catch(err => console.log(err));
+    dispatch(getMyUser()).then(res => {
+      setId(res.payload?._id);
+      setFollowing(res.payload?.following);
+    });
   }, [followChange]);
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(getMyProfile())
-        .then(res => {
-          setFollowing(res.payload?.profile?.user?.following);
-        })
-        .catch(err => console.log(err));
+      dispatch(getMyUser()).then(res => {
+        setFollowing(res.payload?.following);
+      });
     }, []),
   );
 
@@ -107,7 +104,16 @@ const ExploreScreen = () => {
         </View>
 
         {component === 'explore' ? (
-          <>
+          <View
+            //detect when user swipes left or right
+            onTouchStart={e => (this.touchX = e.nativeEvent.pageX)}
+            onTouchEnd={e => {
+              if (this.touchX - e.nativeEvent.pageX > 50) {
+                setComponent('followers');
+              } else if (this.touchX - e.nativeEvent.pageX < -50) {
+                setComponent('following');
+              }
+            }}>
             <View style={tw`px-5`}>
               {data &&
                 data.user.map((item, index) => {
@@ -248,11 +254,29 @@ const ExploreScreen = () => {
                 <Text style={tw`text-lg font-light`}>No Profiles Found</Text>
               </View>
             )}
-          </>
+          </View>
         ) : component === 'followers' ? (
-          <Followers id={id} />
+          <View
+            //detect when user swipes left or right
+            onTouchStart={e => (this.touchX = e.nativeEvent.pageX)}
+            onTouchEnd={e => {
+              if (this.touchX - e.nativeEvent.pageX < -50) {
+                setComponent('explore');
+              }
+            }}>
+            <Followers id={id} />
+          </View>
         ) : (
-          <Following id={id} />
+          <View
+            //detect when user swipes left or right
+            onTouchStart={e => (this.touchX = e.nativeEvent.pageX)}
+            onTouchEnd={e => {
+              if (this.touchX - e.nativeEvent.pageX > 50) {
+                setComponent('explore');
+              }
+            }}>
+            <Following id={id} />
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>

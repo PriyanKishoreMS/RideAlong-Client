@@ -36,6 +36,23 @@ export const getAllUsers = createAsyncThunk(
   },
 );
 
+export const getMyUser = createAsyncThunk('users/getMyUser', async () => {
+  var token = await AsyncStorage.getItem('token');
+  return await fetch(`http://${IP}/api/users/me`, {
+    method: 'GET',
+    headers: {
+      'auth-token': token,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      return data;
+    })
+    .catch(err => console.error(err, 'error from getMyUser'));
+});
+
 export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
   // console.log(users, 'users from postUser');
   return await fetch(`http://${IP}/api/users`, {
@@ -140,6 +157,17 @@ const userSlice = createSlice({
       state.user = action.payload;
     },
     [getAllUsers.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    },
+    [getMyUser.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyUser.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+    },
+    [getMyUser.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     },

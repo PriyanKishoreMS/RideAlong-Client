@@ -26,10 +26,11 @@ export const passsengerRequest = createAsyncThunk(
 
 export const acceptPassenger = createAsyncThunk(
   'ride/acceptPassenger',
-  async ({id, passengerId}) => {
+  async params => {
+    console.log(params);
     var token = await AsyncStorage.getItem('token');
     return await fetch(
-      `http://${IP}/api/ride/passenger/${id}/${passengerId}/accept`,
+      `http://${IP}/api/ride/passenger/${params[0]}/${params[1]}/accept`,
       {
         method: 'PATCH',
         headers: {
@@ -46,10 +47,10 @@ export const acceptPassenger = createAsyncThunk(
 
 export const rejectPassenger = createAsyncThunk(
   'ride/rejectPassenger',
-  async ({id, passengerId}) => {
+  async params => {
     var token = await AsyncStorage.getItem('token');
     return await fetch(
-      `http://${IP}/api/ride/passenger/${id}/${passengerId}/reject`,
+      `http://${IP}/api/ride/passenger/${params[0]}/${params[1]}/reject`,
       {
         method: 'PATCH',
         headers: {

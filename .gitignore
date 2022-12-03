@@ -18,6 +18,8 @@ metro.config.js
 .node-version
 .vscode
 /slices/config.js
+todo.md
+CostEst.md
 
 # Xcode
 #

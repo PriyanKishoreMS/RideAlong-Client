@@ -68,6 +68,18 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select(
+      ' -__v -uid -email -date',
+    );
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route POST api/users
 // @desc Register user
 // @access Public

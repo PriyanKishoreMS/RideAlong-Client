@@ -198,6 +198,11 @@ const RideStackComponent = () => {
         component={SingleRideScreen}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="SingleProfile"
+        component={SingleProfileScreen}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
