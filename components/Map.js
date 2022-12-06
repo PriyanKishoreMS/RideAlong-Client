@@ -81,6 +81,7 @@ const Map = () => {
           destination={destination.description}
           apikey={GOOGLEMAPS_API_KEY}
           strokeWidth={3}
+          optimizeWaypoints={true}
           strokeColor="black"
         />
       )}

@@ -136,10 +136,10 @@ const ConfirmRide = ({navigation}) => {
               <View style={tw`flex  w-10/21`}>
                 <Text style={tw` pt-3 font-bold text-gray-600`}>Origin </Text>
                 <Text style={tw`text-left font-medium`}>
-                  {origin.description.length > 20 ? (
-                    <Text>{origin.description.substring(0, 20)}..</Text>
+                  {origin?.description?.length > 20 ? (
+                    <Text>{origin?.description.substring(0, 20)}..</Text>
                   ) : (
-                    <Text>{origin.description}</Text>
+                    <Text>{origin?.description}</Text>
                   )}
                 </Text>
               </View>
@@ -148,10 +148,10 @@ const ConfirmRide = ({navigation}) => {
                   Destination{' '}
                 </Text>
                 <Text style={tw`text-left font-medium text-right`}>
-                  {origin.description.length > 20 ? (
-                    <Text>{destination.description.substring(0, 20)}..</Text>
+                  {origin?.description?.length > 20 ? (
+                    <Text>{destination?.description.substring(0, 20)}..</Text>
                   ) : (
-                    <Text>{destination.description}</Text>
+                    <Text>{destination?.description}</Text>
                   )}
                 </Text>
               </View>

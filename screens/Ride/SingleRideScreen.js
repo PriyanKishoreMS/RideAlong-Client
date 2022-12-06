@@ -9,16 +9,17 @@ import {
 import {Button} from 'react-native-elements';
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {passsengerRequest} from '../slices/passengerSlice';
 import {useNavigation} from '@react-navigation/native';
-import RideMap from '../components/RideMap';
 import tw from 'twrnc';
 import {GOOGLEMAPS_API_KEY} from '@env';
-import {getMyUser} from '../slices/userSlice';
-import {getRideById} from '../slices/rideSlice';
-import {acceptPassenger, rejectPassenger} from '../slices/passengerSlice';
-import {getProfileById} from '../slices/profileSlice';
-import {deleteRide} from '../slices/rideSlice';
+
+import {passsengerRequest} from '../../slices/passengerSlice';
+import {getMyUser} from '../../slices/userSlice';
+import {getRideById} from '../../slices/rideSlice';
+import {acceptPassenger, rejectPassenger} from '../../slices/passengerSlice';
+import {getProfileById} from '../../slices/profileSlice';
+import {deleteRide} from '../../slices/rideSlice';
+import RideMap from '../../components/RideMap';
 
 const SingleRideScreen = () => {
   const navigation = useNavigation();

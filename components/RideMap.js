@@ -8,11 +8,6 @@ import React from 'react';
 
 const RideMap = ({rideData}) => {
   const mapRef = useRef(null);
-
-  useEffect(() => {
-    console.log(rideData);
-  }, [rideData]);
-
   const origin = rideData?.source;
   const destination = rideData?.destination;
 

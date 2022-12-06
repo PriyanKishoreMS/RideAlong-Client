@@ -107,6 +107,16 @@ cron.schedule('0 */12 * * *', async () => {
       const inactiveride = new InactiveRide(ride);
       inactiveride.isNew = true;
       await inactiveride.save();
+      ride.passengers.forEach(async passenger => {
+        const user = await User.findById(passenger.user);
+        user.ridesJoined.splice(user.ridesJoined.indexOf(ride._id), 1);
+        user.ridesJoinedInactive.push(ride._id);
+        await user.save();
+      });
+      const host = await User.findById(ride.user);
+      host.ridesCreated.splice(host.ridesCreated.indexOf(ride._id), 1);
+      host.ridesCreatedInactive.push(ride._id);
+      await host.save();
       await Ride.findByIdAndRemove(ride._id);
     });
     console.log('Rides updated');

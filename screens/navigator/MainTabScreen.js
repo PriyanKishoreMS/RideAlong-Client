@@ -3,15 +3,17 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {Icon} from 'react-native-elements';
 
-import HomeScreen from '../HomeScreen';
-import ExploreScreen from '../ExploreScreen';
-import ProfileScreen from '../ProfileScreen';
-import MapScreen from '../MapScreen';
-import UpdateProfileScreen from '../UpdateProfileScreen';
-import SingleProfileScreen from '../SingleProfileScreen';
-import RideScreen from '../RideScreen';
-import NotificationScreen from '../NotificationScreen';
-import SingleRideScreen from '../SingleRideScreen';
+import HomeScreen from '../Home/HomeScreen';
+import ExploreScreen from '../Explore/ExploreScreen';
+import ProfileScreen from '../Profile/ProfileScreen';
+import MapScreen from '../Home/MapScreen';
+import UpdateProfileScreen from '../Profile/UpdateProfileScreen';
+import SingleProfileScreen from '../Explore/SingleProfileScreen';
+import RideScreen from '../Ride/RideScreen';
+import NotificationScreen from '../Notification/NotificationScreen';
+import SingleRideScreen from '../Ride/SingleRideScreen';
+import HomeAddressScreen from '../Home/HomeAddressScreen';
+import WorkAddressScreen from '../Home/WorkAddressScreen';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
@@ -154,6 +156,20 @@ const MainStackComponent = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="HomeAddress"
+        component={HomeAddressScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="WorkAddress"
+        component={WorkAddressScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -164,7 +180,8 @@ const ProfileStackComponent = () => {
       <Stack.Screen
         name="ProfileStack1"
         component={ProfileScreen}
-        options={{headerShown: false}}></Stack.Screen>
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />
     </Stack.Navigator>
   );
@@ -176,7 +193,8 @@ const ExploreStackComponent = () => {
       <Stack.Screen
         name="ExploreStack"
         component={ExploreScreen}
-        options={{headerShown: false}}></Stack.Screen>
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="SingleProfile"
         component={SingleProfileScreen}
@@ -192,7 +210,8 @@ const RideStackComponent = () => {
       <Stack.Screen
         name="RideStack"
         component={RideScreen}
-        options={{headerShown: false}}></Stack.Screen>
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="SingleRide"
         component={SingleRideScreen}

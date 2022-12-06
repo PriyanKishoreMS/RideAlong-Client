@@ -1,10 +1,11 @@
 import {View, Text, SafeAreaView, Image, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import BackButton from '../components/BackButton';
 import {useDispatch, useSelector} from 'react-redux';
-import tw from 'twrnc';
 import {Button, Icon} from 'react-native-elements';
-import {postFriend} from '../slices/userSlice';
+import tw from 'twrnc';
+
+import {postFriend} from '../../slices/userSlice';
+import BackButton from '../../components/BackButton';
 
 const SingleProfileScreen = ({route, navigation}) => {
   const {id} = route.params;

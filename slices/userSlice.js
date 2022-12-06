@@ -88,7 +88,6 @@ export const postFriend = createAsyncThunk('user/postFriend', async id => {
   })
     .then(res => res.json())
     .then(data => {
-      // console.log(data, 'data from postFriend');
       return data;
     })
     .catch(err => console.error(err, 'error from postFriend'));
@@ -108,7 +107,6 @@ export const getMyFollowing = createAsyncThunk(
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data from getMyFollowing');
         return data;
       })
       .catch(err => console.error(err, 'error from getMyFollowing'));
@@ -135,6 +133,73 @@ export const getMyFollowers = createAsyncThunk(
       .catch(err => console.error(err, 'error from getMyFollowers'));
   },
 );
+
+export const putMyHomeAddress = createAsyncThunk(
+  'user/putMyHomeAddress',
+  async ({location}) => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/users/me/home`, {
+      method: 'PUT',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lat: location.lat,
+        lng: location.lng,
+        desc: location.desc,
+      }),
+    })
+      .then(res => res.json())
+      .then(() => {
+        console.log('Home address updated');
+      })
+      .catch(err => console.error(err, 'error from putMyHomeAddress'));
+  },
+);
+
+export const putMyWorkAddress = createAsyncThunk(
+  'user/putMyWorkAddress',
+  async ({location}) => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/users/me/work`, {
+      method: 'PUT',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lat: location.lat,
+        lng: location.lng,
+        desc: location.desc,
+      }),
+    })
+      .then(res => res.json())
+      .then(() => {
+        console.log('Work address updated');
+      })
+      .catch(err => console.error(err, 'error from putMyWorkAddress'));
+  },
+);
+
+export const getMyAddress = createAsyncThunk('user/getMyAddress', async () => {
+  var token = await AsyncStorage.getItem('token');
+  return await fetch(`http://${IP}/api/users/me/address`, {
+    method: 'GET',
+    headers: {
+      'auth-token': token,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      return data;
+    })
+    .catch(err => console.error(err, 'error from getMyAddress'));
+});
 
 const userSlice = createSlice({
   name: 'user',
@@ -212,6 +277,39 @@ const userSlice = createSlice({
       state.profile = action.payload;
     },
     [getMyFollowers.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [putMyHomeAddress.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [putMyHomeAddress.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [putMyHomeAddress.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [putMyWorkAddress.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [putMyWorkAddress.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [putMyWorkAddress.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getMyAddress.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyAddress.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getMyAddress.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

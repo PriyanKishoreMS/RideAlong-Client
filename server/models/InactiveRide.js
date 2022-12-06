@@ -14,8 +14,24 @@ const InactiveRideSchema = new Schema({
     type: String,
     required: true,
   },
+  sourceLat: {
+    type: Number,
+    required: true,
+  },
+  sourceLng: {
+    type: Number,
+    required: true,
+  },
   destination: {
     type: String,
+    required: true,
+  },
+  destinationLat: {
+    type: Number,
+    required: true,
+  },
+  destinationLng: {
+    type: Number,
     required: true,
   },
   seats: {
@@ -43,9 +59,17 @@ const InactiveRideSchema = new Schema({
   },
   passengers: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      status: {
+        type: Number,
+        enum: [0, 1, 2],
+        default: 0,
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      },
     },
+    {timestamps: true},
   ],
 });
 

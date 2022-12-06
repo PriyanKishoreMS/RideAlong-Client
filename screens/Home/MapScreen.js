@@ -1,10 +1,11 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import tw from 'twrnc';
-import Map from '../components/Map';
 import {createStackNavigator} from '@react-navigation/stack';
-import DestinationCard from '../components/DestinationCard';
-import ConfirmRide from '../components/ConfirmRide';
+
+import Map from '../../components/Map';
+import DestinationCard from '../../components/DestinationCard';
+import ConfirmRide from '../../components/ConfirmRide';
 
 const MapScreen = () => {
   const Stack = createStackNavigator();

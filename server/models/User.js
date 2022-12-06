@@ -19,6 +19,28 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  home: {
+    lat: {
+      type: Number,
+    },
+    lng: {
+      type: Number,
+    },
+    desc: {
+      type: String,
+    },
+  },
+  work: {
+    lat: {
+      type: Number,
+    },
+    lng: {
+      type: Number,
+    },
+    desc: {
+      type: String,
+    },
+  },
   followers: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +60,18 @@ const UserSchema = new mongoose.Schema({
     },
   ],
   ridesJoined: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ride',
+    },
+  ],
+  ridesCreatedInactive: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ride',
+    },
+  ],
+  ridesJoinedInactive: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ride',

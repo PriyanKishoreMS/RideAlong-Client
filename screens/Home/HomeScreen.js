@@ -1,23 +1,17 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import React from 'react';
+import {View, Text, SafeAreaView, StyleSheet} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {GOOGLEMAPS_API_KEY} from '@env';
 import tw from 'twrnc';
-import RideCard from '../components/RideCard';
 import {useDispatch} from 'react-redux';
-import {setDestination, setOrigin} from '../slices/navSlice';
 import auth from '@react-native-firebase/auth';
-import MenuButton from '../components/MenuButton';
-import SelectAddress from '../components/SelectAddress';
-import {Icon} from 'react-native-elements';
 import {Avatar} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
+navigator.geolocation = require('@react-native-community/geolocation');
+
+import {setDestination, setOrigin} from '../../slices/navSlice';
+import MenuButton from '../../components/MenuButton';
+import RideCard from '../../components/RideCard';
+import SetOrigin from '../../components/SetOrigin';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -32,6 +26,26 @@ const HomeScreen = () => {
   } else {
     greetings = 'Good Evening';
   }
+
+  // const getCurrentLocation = () => {
+  //   Geolocation.getCurrentPosition(
+  //     position => {
+  //       console.log(position);
+  //       dispatch(
+  //         setOrigin({
+  //           location: {
+  //             latitude: position.coords.latitude,
+  //             longitude: position.coords.longitude,
+  //           },
+  //           description: 'Current Location',
+  //         }),
+  //       );
+  //       dispatch(setDestination(null));
+  //     },
+  //     error => console.log(error),
+  //     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+  //   );
+  // };
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
@@ -59,15 +73,24 @@ const HomeScreen = () => {
         </View>
         <GooglePlacesAutocomplete
           placeholder="Where from?"
-          nearbyPlacesAPI="GooglePlacesSearch"
+          nearbyPlacesAPI="GoogleReverseGeocoding"
+          GoogleReverseGeocodingQuery={{
+            rankby: 'distance',
+          }}
+          GooglePlacesSearchQuery={{
+            rankby: 'distance',
+          }}
           returnKeyType={'search'}
           debounce={400}
           minLength={2}
           listViewDisplayed="auto"
           focusable={true}
+          enableHighAccuracyLocation={true}
+          isRowScrollable={true}
           enablePoweredByContainer={false}
           onPress={(data, details = null) => {
-            // console.log(data, details);
+            console.log(details.geometry.location, details.formatted_address);
+            data.description = data.description || details.formatted_address;
             dispatch(
               setOrigin({
                 location: details.geometry.location,
@@ -77,8 +100,8 @@ const HomeScreen = () => {
             dispatch(setDestination(null));
           }}
           fetchDetails={true}
-          // currentLocation={true}
-          // currentLocationLabel="Current location"
+          currentLocation={true}
+          currentLocationLabel="Current location"
           //add clear button
           // clearButtonMode="always"
           styles={InputStyles}
@@ -89,21 +112,21 @@ const HomeScreen = () => {
           }}
           onFail={error => console.error(error)}
         />
-        <TouchableOpacity style={tw`w-full bg-slate-200 rounded-xl mb-3`}>
-          <View style={tw`flex-row items-center p-3`}>
-            <Icon
-              name="my-location"
-              type="material"
-              size={24}
-              color="#2196F3"
-              style={tw`px-4`}
-            />
-            <Text style={tw`text-base font-semibold pr-2 text-gray-700`}>
-              Current Location
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <SelectAddress />
+        {/* <TouchableOpacity
+          onPress={() => getCurrentLocation()}
+          style={tw`w-full flex-row items-center p-3 bg-slate-200 rounded-xl mb-3`}>
+          <Icon
+            name="my-location"
+            type="material"
+            size={24}
+            color="#2196F3"
+            style={tw`px-4`}
+          />
+          <Text style={tw`text-base font-semibold pr-2 text-gray-700`}>
+            Current Location
+          </Text>
+        </TouchableOpacity> */}
+        <SetOrigin />
         <RideCard />
       </View>
     </SafeAreaView>

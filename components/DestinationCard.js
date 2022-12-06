@@ -14,7 +14,7 @@ import {useDispatch} from 'react-redux';
 import {setDestination} from '../slices/navSlice';
 import {useNavigation} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
-import SelectAddress from './SelectAddress';
+import SetDestination from './SetDestination';
 
 const DestinationCard = () => {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const DestinationCard = () => {
               components: 'country:in',
             }}
           />
-          <SelectAddress />
+          <SetDestination />
         </View>
       </View>
     </SafeAreaView>

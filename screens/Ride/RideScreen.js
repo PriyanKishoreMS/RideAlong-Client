@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import MenuButton from '../components/MenuButton';
 import tw from 'twrnc';
 import {useSelector, useDispatch} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
-import {getAllRides} from '../slices/rideSlice';
-import {getRideById} from '../slices/rideSlice';
 import {Icon} from 'react-native-elements';
+import {useFocusEffect} from '@react-navigation/native';
+
+import MenuButton from '../../components/MenuButton';
+import {getAllRides} from '../../slices/rideSlice';
+import {getRideById} from '../../slices/rideSlice';
 
 const RideScreen = ({navigation}) => {
   const [rides, setRides] = useState();
+  const [component, setComponent] = useState('followingRides');
 
   const dispatch = useDispatch();
 
@@ -41,6 +43,26 @@ const RideScreen = ({navigation}) => {
             placeholder="Find Rides"
           />
         </View>
+
+        <View style={tw`flex-row px-5 mb-4 items-center h-8`}>
+          <TouchableOpacity
+            onPress={() => setComponent('followingRides')}
+            //slide in from left
+            style={tw`flex-1 h-full justify-center items-center rounded-l-lg ${
+              component === 'followingRides' ? 'bg-blue-200' : 'bg-slate-200'
+            }`}>
+            <Text style={tw`font-bold`}>My Friends</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setComponent('explore')}
+            //slide in from left
+            style={tw`flex-1 h-full justify-center rounded-r-lg items-center ${
+              component === 'explore' ? 'bg-blue-200' : 'bg-slate-200'
+            }`}>
+            <Text style={tw`font-bold`}>All</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={tw`flex justify-between items-center mb-18 px-5`}>
           {rides &&
             rides.map((ride, index) => {

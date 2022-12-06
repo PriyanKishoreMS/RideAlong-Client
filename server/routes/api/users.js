@@ -71,7 +71,7 @@ router.get('/', auth, async (req, res) => {
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select(
-      ' -__v -uid -email -date',
+      ' -__v -uid -email -ridesCreated -ridesJoined -date',
     );
     res.json(user);
   } catch (err) {
@@ -167,6 +167,49 @@ router.get('/me/followers', auth, async (req, res) => {
   }
 });
 
+// put request to update home address
+router.put('/me/home', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const {lat, lng, desc} = req.body;
+    const home = {
+      lat,
+      lng,
+      desc,
+    };
+    if (!home) {
+      return res.status(400).json({msg: 'Please enter a home address'});
+    }
+    user.home = home;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.put('/me/work', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const {lat, lng, desc} = req.body;
+    const work = {
+      lat,
+      lng,
+      desc,
+    };
+    if (!work) {
+      return res.status(400).json({msg: 'Please enter a work address'});
+    }
+    user.work = work;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 router.patch('/friend/:id', auth, async (req, res) => {
   try {
     const profile = await User.findById(req.user.id);
@@ -196,6 +239,22 @@ router.patch('/friend/:id', auth, async (req, res) => {
     await friendProfile.save();
 
     res.json(profile.following);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.get('/me/address', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const home = user.home;
+    const work = user.work;
+    const address = {
+      home,
+      work,
+    };
+    res.json(address);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

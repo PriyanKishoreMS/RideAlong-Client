@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
@@ -27,7 +27,7 @@ const Following = ({id}) => {
   );
 
   return (
-    <View style={tw`px-5`}>
+    <ScrollView style={tw`px-5`}>
       {following?.map((following, index) => (
         <TouchableOpacity
           style={tw`flex-row m-2 p-2 bg-slate-50 rounded-lg shadow-md items-center justify-between`}
@@ -54,7 +54,7 @@ const Following = ({id}) => {
           </View>
         </TouchableOpacity>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

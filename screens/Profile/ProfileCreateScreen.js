@@ -1,19 +1,20 @@
 import {View, KeyboardAvoidingView} from 'react-native';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import tw from 'twrnc';
 import {SafeAreaView} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {AuthContext} from '../hooks/useAuth';
-import {useDispatch} from 'react-redux';
-import tw from 'twrnc';
-import {useNavigation} from '@react-navigation/native';
-import {getSingleProfile} from '../slices/profileSlice';
 import {Button} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 
-import {postProfile} from '../slices/profileSlice';
-import ProfileForm from '../components/ProfileForm';
+import {postProfile} from '../../slices/profileSlice';
+import {AuthContext} from '../../hooks/useAuth';
+import ProfileForm from '../../components/ProfileForm';
 
-const UpdateProfileScreen = () => {
+const ProfileCreateScreen = () => {
+  const userInfo = auth().currentUser;
   const [state, setState] = useState({
+    name: '',
     mobile: '',
     dob: new Date(),
     location: '',
@@ -27,7 +28,6 @@ const UpdateProfileScreen = () => {
   const {profile, setProfile} = useContext(AuthContext);
 
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const handleProfileSubmit = async () => {
     if (
@@ -42,11 +42,8 @@ const UpdateProfileScreen = () => {
       alert('Please fill all the fields');
     } else {
       try {
-        if (state.vehicleType == 'None') {
-          state.vehicleNumber = 'NA';
-          state.vehicleModel = 'NA';
-        }
         const profiles = {
+          name: userInfo.displayName,
           dob: state.dob.toString(),
           location: state.location,
           mobile: state.mobile,
@@ -56,14 +53,19 @@ const UpdateProfileScreen = () => {
           vehicleModel: state.vehicleModel,
         };
         await dispatch(postProfile({profiles}));
+        // dispatch(getSingleUser()).then(res => {
+        //   if (res.payload == 200) {
+        //     setProfile(false);
+        //   }
+        // });
         setProfile(false);
-        navigation.goBack();
-        dispatch(getSingleProfile());
+        // navigation.navigate('Home');
       } catch (error) {
         console.log(error);
       }
     }
   };
+
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
       <ScrollView>
@@ -76,13 +78,12 @@ const UpdateProfileScreen = () => {
             state={state}
             setState={setState}
           />
-          <View
-            style={tw`flex flex-row items-center justify-center mt-2 mb-10 px-12`}>
+          {/* left align buttons */}
+          <View style={tw`flex flex-row items-center justify-center`}>
             <Button
               title="Submit"
               onPress={() => handleProfileSubmit()}
-              containerStyle={tw`bg-black w-full mt-4`}
-              buttonStyle={tw`bg-black w-full`}
+              style={tw`bg-blue-500 w-1/2`}
             />
           </View>
         </KeyboardAvoidingView>
@@ -91,4 +92,4 @@ const UpdateProfileScreen = () => {
   );
 };
 
-export default UpdateProfileScreen;
+export default ProfileCreateScreen;

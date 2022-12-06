@@ -8,7 +8,7 @@ import {useDispatch} from 'react-redux';
 import {AuthContext} from '../hooks/useAuth';
 import {getMyProfile} from '../slices/profileSlice';
 
-import ProfileCreateScreen from '../screens/ProfileCreateScreen';
+import ProfileCreateScreen from '../screens/Profile/ProfileCreateScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MainTabScreen from '../screens/navigator/MainTabScreen';
 import {DrawerContent} from '../screens/DrawerContent';

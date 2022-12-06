@@ -1,14 +1,15 @@
 import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
-import {AuthContext} from '../hooks/useAuth';
 import tw from 'twrnc';
 import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMyProfile} from '../slices/profileSlice';
 import {Button} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-import MenuButton from '../components/MenuButton';
+
+import {AuthContext} from '../../hooks/useAuth';
+import {getMyProfile} from '../../slices/profileSlice';
+import MenuButton from '../../components/MenuButton';
 
 const HomeScreen = ({navigation}) => {
   const {logout} = useContext(AuthContext);
@@ -99,6 +100,42 @@ const HomeScreen = ({navigation}) => {
               style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
             />
             <Text style={tw`text-lg font-semibold`}>Update Profile</Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Icon name="chevron-forward" size={30} color="gray" />
+          </View>
+        </TouchableOpacity>
+        <View style={tw`border-b border-gray-300 w-full`}></View>
+        <TouchableOpacity
+          style={tw`flex-row justify-between bg-white w-full mb-2 mt-1`}
+          onPress={() => navigation.navigate('HomeAddress')}>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Icon
+              name="refresh-circle-outline"
+              type="ionicon"
+              size={25}
+              color="#555"
+              style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
+            />
+            <Text style={tw`text-lg font-semibold`}>Update Home Address</Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Icon name="chevron-forward" size={30} color="gray" />
+          </View>
+        </TouchableOpacity>
+        <View style={tw`border-b border-gray-300 w-full`}></View>
+        <TouchableOpacity
+          style={tw`flex-row justify-between bg-white w-full mb-2 mt-1`}
+          onPress={() => navigation.navigate('WorkAddress')}>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Icon
+              name="refresh-circle-outline"
+              type="ionicon"
+              size={25}
+              color="#555"
+              style={tw`bg-slate-200 rounded-xl p-1 mr-3`}
+            />
+            <Text style={tw`text-lg font-semibold`}>Update Work Address</Text>
           </View>
           <View style={tw`flex-row items-center`}>
             <Icon name="chevron-forward" size={30} color="gray" />
