@@ -95,9 +95,9 @@ export const postFriend = createAsyncThunk('user/postFriend', async id => {
 
 export const getMyFollowing = createAsyncThunk(
   'user/getMyFollowing',
-  async () => {
+  async page => {
     var token = await AsyncStorage.getItem('token');
-    return await fetch(`http://${IP}/api/users/me/following`, {
+    return await fetch(`http://${IP}/api/users/me/following?page=${page}`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -115,9 +115,9 @@ export const getMyFollowing = createAsyncThunk(
 
 export const getMyFollowers = createAsyncThunk(
   'user/getMyFollowers',
-  async () => {
+  async page => {
     var token = await AsyncStorage.getItem('token');
-    return await fetch(`http://${IP}/api/users/me/followers`, {
+    return await fetch(`http://${IP}/api/users/me/followers?page=${page}`, {
       method: 'GET',
       headers: {
         'auth-token': token,

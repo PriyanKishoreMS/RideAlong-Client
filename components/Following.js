@@ -1,4 +1,12 @@
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+  Button,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
@@ -10,51 +18,67 @@ const Following = ({id}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [following, setFollowing] = useState([]);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getMyFollowing()).then(res => {
-      setFollowing(res.payload);
+    dispatch(getMyFollowing(page)).then(res => {
+      setFollowing([...following, ...res.payload?.followingProfiles]);
+      setLastPage(res.payload?.totalPages);
     });
     // console.log(following, 'following');
-  }, []);
+    console.log(lastPage, 'lastPage');
+    console.log(page, 'page');
+  }, [page]);
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(getMyFollowing()).then(res => {
-        setFollowing(res.payload);
+      dispatch(getMyFollowing(page)).then(res => {
+        setFollowing([...following, ...res.payload?.followingProfiles]);
+        setLastPage(res.payload?.totalPages);
       });
     }, []),
   );
 
+  const paging = () => {
+    page > lastPage ? null : setPage(page + 1);
+  };
+
   return (
-    <ScrollView style={tw`px-5`}>
-      {following?.map((following, index) => (
-        <TouchableOpacity
-          style={tw`flex-row m-2 p-2 bg-slate-50 rounded-lg shadow-md items-center justify-between`}
-          onPress={async () => {
-            dispatch(getProfileById(following?._id)).then(res => {
-              navigation.navigate('SingleProfile', {
-                id: id,
+    <View style={tw`bg-stone-100`} showsVerticalScrollIndicator={false}>
+      <FlatList
+        data={following}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        onEndReached={() => paging()}
+        renderItem={({item, index}) => (
+          <TouchableOpacity
+            style={tw`flex-row mx-2 mb-0.5 p-2.5 bg-white shadow-md items-center justify-between`}
+            onPress={async () => {
+              dispatch(getProfileById(item?._id)).then(res => {
+                navigation.navigate('SingleProfile', {
+                  id: id,
+                });
               });
-            });
-          }}
-          key={index}>
-          <View style={tw`flex-row items-center`}>
-            <Image
-              source={{uri: following?.photoURL}}
-              style={tw`w-10 h-10 rounded-xl mr-2`}
-            />
-            <Text style={tw`font-bold text-lg text-gray-600`}>
-              {following?.name.length > 18 ? (
-                <Text>{following?.name.substring(0, 18)}..</Text>
-              ) : (
-                <Text>{following?.name}</Text>
-              )}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+            }}
+            key={index}>
+            <View style={tw`flex-row items-center`}>
+              <Image
+                source={{uri: item?.photoURL}}
+                style={tw`w-10 h-10 rounded-xl mr-2`}
+              />
+              <Text style={tw`font-bold text-lg text-gray-600`}>
+                {item?.name.length > 18 ? (
+                  <Text>{item?.name.substring(0, 18)}..</Text>
+                ) : (
+                  <Text>{item?.name}</Text>
+                )}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   );
 };
 

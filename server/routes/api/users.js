@@ -18,7 +18,7 @@ const auth = require('../../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 7;
+    const limit = parseInt(req.query.limit) || 20;
     const search = req.query.search || '';
     let sort = req.query.sort || 'date';
 
@@ -37,7 +37,7 @@ router.get('/', auth, async (req, res) => {
       name: {$regex: search, $options: 'i'},
       user: {$ne: req.user.id},
     })
-      .select('-following -followers -__v -uid -email -date')
+      .select('name photoURL')
       .sort(sortBy)
       .skip(page * limit)
       .limit(limit);
@@ -50,10 +50,8 @@ router.get('/', auth, async (req, res) => {
 
     const response = {
       page: page + 1,
-      limit,
-      total,
-      totalPages,
       user,
+      totalPages,
     };
 
     res.status(200).json(response);
@@ -135,15 +133,25 @@ router.post('/', async (req, res) => {
 
 router.get('/me/following', auth, async (req, res) => {
   try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
     const user = await User.findById(req.user.id);
 
     const following = user.following;
 
     const followingProfiles = await User.find({
       _id: {$in: following},
-    }).select('name photoURL');
+    })
+      .select('name photoURL')
+      .skip(page * limit)
+      .limit(limit);
 
-    res.json(followingProfiles);
+    const total = await User.countDocuments({
+      _id: {$in: following},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({followingProfiles, totalPages});
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -152,15 +160,25 @@ router.get('/me/following', auth, async (req, res) => {
 
 router.get('/me/followers', auth, async (req, res) => {
   try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
     const user = await User.findById(req.user.id);
 
     const followers = user.followers;
 
     const followersProfiles = await User.find({
       _id: {$in: followers},
-    }).select('name photoURL');
+    })
+      .select('name photoURL')
+      .skip(page * limit)
+      .limit(limit);
 
-    res.json(followersProfiles);
+    const total = await User.countDocuments({
+      _id: {$in: followers},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({followersProfiles, totalPages});
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
