@@ -10,44 +10,58 @@ import {
 import React, {useEffect, useState} from 'react';
 import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
-import {getProfileById} from '../slices/profileSlice';
-import {getMyFollowing} from '../slices/userSlice';
+import {getProfileById} from '../../slices/profileSlice';
+import {getMyFollowers} from '../../slices/userSlice';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
-const Following = ({id}) => {
+const Followers = ({id}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [following, setFollowing] = useState([]);
+  const [followers, setFollowers] = useState([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch(getMyFollowing(page)).then(res => {
-      setFollowing([...following, ...res.payload?.followingProfiles]);
+    dispatch(getMyFollowers(page)).then(res => {
+      // setFollowers([...followers, ...res.payload?.followersProfiles]);
       setLastPage(res.payload?.totalPages);
+      let arrFollowers = [...followers, ...res.payload?.followersProfiles];
+      let uniqe = new Set(arrFollowers.map(a => JSON.stringify(a)));
+      arrFollowers = Array.from(uniqe).map(a => JSON.parse(a));
+      setFollowers(arrFollowers);
     });
-    // console.log(following, 'following');
-    console.log(lastPage, 'lastPage');
-    console.log(page, 'page');
   }, [page]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(getMyFollowing(page)).then(res => {
-        setFollowing([...following, ...res.payload?.followingProfiles]);
-        setLastPage(res.payload?.totalPages);
-      });
-    }, []),
-  );
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setFollowers([]);
+    setPage(1);
+    setIsRefreshing(false);
+  };
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     dispatch(getMyFollowers(page)).then(res => {
+  //       setLastPage(res.payload?.totalPages);
+  //       let arrFollowers = [...followers, ...res.payload?.followersProfiles];
+  //       let uniqe = new Set(arrFollowers.map(a => JSON.stringify(a)));
+  //       arrFollowers = Array.from(uniqe).map(a => JSON.parse(a));
+  //       setFollowers(arrFollowers);
+  //     });
+  //   }, []),
+  // );
 
   const paging = () => {
-    page > lastPage ? null : setPage(page + 1);
+    page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);
   };
 
   return (
     <View style={tw`bg-stone-100`} showsVerticalScrollIndicator={false}>
       <FlatList
-        data={following}
+        data={followers}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         onEndReached={() => paging()}
@@ -82,4 +96,4 @@ const Following = ({id}) => {
   );
 };
 
-export default Following;
+export default Followers;

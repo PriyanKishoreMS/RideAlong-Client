@@ -62,10 +62,29 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const rides = await Ride.find()
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+
+    const rides = await Ride.find({
+      $or: [
+        {source: {$regex: search, $options: 'i'}},
+        {destination: {$regex: search, $options: 'i'}},
+      ],
+    })
       .sort({timestamp: 1})
+      .skip(page * limit)
+      .limit(limit)
       .populate('user', ['name', 'photoURL']);
-    res.json(rides);
+
+    const total = await Ride.countDocuments({
+      $or: [
+        {source: {$regex: search, $options: 'i'}},
+        {destination: {$regex: search, $options: 'i'}},
+      ],
+    });
+    const totalPages = Math.ceil(total / limit);
+    res.json({rides, totalPages});
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -88,12 +107,20 @@ router.get('/me', auth, async (req, res) => {
 // get all rides of user following
 router.get('/following', auth, async (req, res) => {
   try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+
     const user = await User.findById(req.user.id);
     const following = user.following;
     const rides = await Ride.find({user: {$in: following}})
       .sort({date: 1})
-      .populate('user', ['name', 'photoURL']);
-    res.json(rides);
+      .populate('user', ['name', 'photoURL'])
+      .skip(page * limit)
+      .limit(limit);
+
+    const total = await Ride.countDocuments({user: {$in: following}});
+    const totalPages = Math.ceil(total / limit);
+    res.json({rides, totalPages});
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

@@ -127,7 +127,7 @@ export const getMyFollowers = createAsyncThunk(
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data from getMyFollowers');
+        // console.log(data, 'data from getMyFollowers');
         return data;
       })
       .catch(err => console.error(err, 'error from getMyFollowers'));

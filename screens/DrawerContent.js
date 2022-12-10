@@ -6,6 +6,7 @@ import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import {AuthContext} from '../hooks/useAuth';
+import {correctCase} from '../components/utils/correctCase';
 
 export function DrawerContent(props) {
   const userInfo = auth().currentUser;
@@ -14,18 +15,22 @@ export function DrawerContent(props) {
   return (
     <View style={tw`flex-1`}>
       <DrawerContentScrollView {...props}>
-        <View style={tw`flex-row items-center mx-3 mt-5 rounded-xl`}>
+        <View style={tw`flex-row items-center mx-2 mt-5 rounded-xl`}>
           <Avatar.Image
             source={{
               uri: userInfo?.photoURL,
             }}
             size={50}
           />
-          <View style={tw`ml-3`}>
+          <View style={tw`ml-2`}>
             <Title style={tw`text-black text-xl`}>
-              {userInfo?.displayName}
+              {correctCase(userInfo?.displayName)}
             </Title>
-            <Caption style={tw`text-xs`}>{userInfo?.email}</Caption>
+            <Caption style={tw`text-xs`}>
+              {userInfo?.email.length > 30
+                ? userInfo?.email.substring(0, 30) + '..'
+                : userInfo?.email}
+            </Caption>
           </View>
         </View>
         <View style={tw`mt-5`}>

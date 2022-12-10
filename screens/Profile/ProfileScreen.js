@@ -6,10 +6,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {correctCase} from '../../components/utils/correctCase';
 
 import {AuthContext} from '../../hooks/useAuth';
 import {getMyProfile} from '../../slices/profileSlice';
-import MenuButton from '../../components/MenuButton';
+import MenuButton from '../../components/utils/MenuButton';
 
 const HomeScreen = ({navigation}) => {
   const {logout} = useContext(AuthContext);
@@ -46,11 +47,13 @@ const HomeScreen = ({navigation}) => {
           <View style={tw`flex-row justify-between`}>
             <View>
               <Text style={tw`text-xl font-semibold`}>
-                {userProfile?.user?.name}
+                {correctCase(userProfile?.user?.name)}
                 {/* {userProfile.name} */}
               </Text>
               <Text style={tw` font-semibold text-xs mb-2`}>
-                {userInfo?.email}
+                {userInfo?.email.length > 30
+                  ? userInfo?.email.substring(0, 30) + '...'
+                  : userInfo?.email}
               </Text>
 
               <Text style={tw`text-gray-500`}>

@@ -18,7 +18,7 @@ const auth = require('../../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 20;
+    const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || '';
     let sort = req.query.sort || 'date';
 
@@ -35,7 +35,7 @@ router.get('/', auth, async (req, res) => {
     //
     const user = await User.find({
       name: {$regex: search, $options: 'i'},
-      user: {$ne: req.user.id},
+      _id: {$ne: req.user.id},
     })
       .select('name photoURL')
       .sort(sortBy)

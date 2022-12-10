@@ -11,24 +11,41 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import tw from 'twrnc';
 import {Button, Icon} from 'react-native-elements';
-import {getProfileById} from '../slices/profileSlice';
-import {postFriend} from '../slices/userSlice';
-import {getMyUser} from '../slices/userSlice';
 
-const AllUsers = ({data, search, page, setPage, filterData, lastPage}) => {
+import {getProfileById} from '../../slices/profileSlice';
+import {postFriend} from '../../slices/userSlice';
+import {getMyUser} from '../../slices/userSlice';
+import {getAllUsers} from '../../slices/userSlice';
+
+const AllUsers = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const [id, setId] = useState('');
   const [following, setFollowing] = useState([]);
+  const [data, setData] = useState([]);
   const [followChange, setFollowChange] = useState(false);
+  const [lastPage, setLastPage] = useState(1);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(getAllUsers(['', page])).then(res => {
+      setLastPage(res?.payload?.totalPages);
+      let arrData = [...data, ...res?.payload?.user];
+      let uniqe = new Set(arrData.map(a => JSON.stringify(a)));
+      arrData = Array.from(uniqe).map(a => JSON.parse(a));
+      setData(arrData);
+    });
+    dispatch(getMyUser()).then(res => {
+      setId(res.payload?._id);
+    });
+  }, [page]);
 
   useEffect(() => {
     dispatch(getMyUser()).then(res => {
       setId(res.payload?._id);
       setFollowing(res.payload?.following);
     });
-    console.log(data, 'data from tempScreen');
   }, [followChange]);
 
   useFocusEffect(
@@ -114,13 +131,13 @@ const AllUsers = ({data, search, page, setPage, filterData, lastPage}) => {
     <View style={tw`bg-stone-100`}>
       <View>
         <FlatList
-          data={search ? filterData : data}
+          data={data}
           keyExtractor={(item, index) => index.toString()}
           onEndReachedThreshold={0.5}
           showsVerticalScrollIndicator={false}
           onEndReached={() => {
             console.log(page, 'page');
-            search ? null : paging();
+            paging();
           }}
           style={tw``}
           // keyExtractor={item => item._id}

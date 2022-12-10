@@ -27,7 +27,7 @@ const RideMap = ({rideData}) => {
   return (
     <MapView
       ref={mapRef}
-      style={tw`flex-1`}
+      style={tw` h-4/5`}
       region={{
         latitude: rideData?.sourceLat ? rideData?.sourceLat : 0,
         longitude: rideData?.sourceLng ? rideData?.sourceLng : 0,

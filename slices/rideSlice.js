@@ -33,17 +33,23 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
     .catch(err => console.log(err, 'error from rideSlice'));
 });
 
-export const getAllRides = createAsyncThunk('ride/getAllRides', async () => {
-  return await fetch(`http://${IP}/api/ride`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  })
-    .then(res => res.json())
-    .catch(err => console.log(err, 'error from rideSlice'));
-});
+export const getAllRides = createAsyncThunk(
+  'ride/getAllRides',
+  async params => {
+    return await fetch(
+      `http://${IP}/api/ride?search=${params[0]}&page=${params[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then(res => res.json())
+      .catch(err => console.log(err, 'error from rideSlice'));
+  },
+);
 
 export const getRideById = createAsyncThunk('ride/getRideById', async id => {
   console.log(id, 'id from getRideById');
@@ -81,9 +87,9 @@ export const getMyRides = createAsyncThunk('ride/getMyRides', async () => {
 
 export const getFollowingRides = createAsyncThunk(
   'ride/getFollowingRides',
-  async () => {
+  async page => {
     var token = await AsyncStorage.getItem('token');
-    return await fetch(`http://${IP}/api/ride/following`, {
+    return await fetch(`http://${IP}/api/ride/following?page=${page}`, {
       method: 'GET',
       headers: {
         'auth-token': token,

@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 navigator.geolocation = require('@react-native-community/geolocation');
 
 import {setDestination, setOrigin} from '../../slices/navSlice';
-import MenuButton from '../../components/MenuButton';
+import MenuButton from '../../components/utils/MenuButton';
 import RideCard from '../../components/RideCard';
 import SetOrigin from '../../components/SetOrigin';
 

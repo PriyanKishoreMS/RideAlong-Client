@@ -21,7 +21,6 @@ const SearchScreen = ({data}) => {
       setId(res.payload?._id);
       setFollowing(res.payload?.following);
     });
-    console.log(data, 'data from tempScreen');
   }, [followChange]);
 
   return (

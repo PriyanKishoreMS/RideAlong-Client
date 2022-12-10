@@ -6,48 +6,69 @@ import {
   ScrollView,
   FlatList,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import tw from 'twrnc';
 import {useDispatch} from 'react-redux';
-import {getProfileById} from '../slices/profileSlice';
-import {getMyFollowers} from '../slices/userSlice';
+import {getProfileById} from '../../slices/profileSlice';
+import {getMyFollowing} from '../../slices/userSlice';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
-const Followers = ({id}) => {
+const Following = ({id}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch(getMyFollowers(page)).then(res => {
-      setFollowers([...followers, ...res.payload?.followersProfiles]);
+    setLoading(true);
+    dispatch(getMyFollowing(page)).then(res => {
+      // setFollowing([...following, ...res.payload?.followingProfiles]);
       setLastPage(res.payload?.totalPages);
+      let arrFollowing = [...following, ...res.payload?.followingProfiles];
+      let uniqe = new Set(arrFollowing.map(a => JSON.stringify(a)));
+      arrFollowing = Array.from(uniqe).map(a => JSON.parse(a));
+      setFollowing(arrFollowing);
+      setLoading(false);
     });
+    // console.log(lastPage, 'lastPage');
+    console.log(page, 'page');
   }, [page]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(getMyFollowers(page)).then(res => {
-        setFollowers([...followers, ...res.payload?.followersProfiles]);
-        setLastPage(res.payload?.totalPages);
-      });
-    }, []),
-  );
+  const renderLoader = () => {
+    return loading ? (
+      <View style={tw`flex-1 justify-center items-center m-2`}>
+        <ActivityIndicator size="large" color="#777" />
+      </View>
+    ) : null;
+  };
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setFollowing([]);
+    setPage(1);
+    setIsRefreshing(false);
+  };
 
   const paging = () => {
-    page > lastPage ? null : setPage(page + 1);
+    page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);
   };
 
   return (
     <View style={tw`bg-stone-100`} showsVerticalScrollIndicator={false}>
       <FlatList
-        data={followers}
+        data={following}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         onEndReached={() => paging()}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderLoader}
         renderItem={({item, index}) => (
           <TouchableOpacity
             style={tw`flex-row mx-2 mb-0.5 p-2.5 bg-white shadow-md items-center justify-between`}
@@ -79,4 +100,4 @@ const Followers = ({id}) => {
   );
 };
 
-export default Followers;
+export default Following;

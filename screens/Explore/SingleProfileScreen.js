@@ -5,7 +5,7 @@ import {Button, Icon} from 'react-native-elements';
 import tw from 'twrnc';
 
 import {postFriend} from '../../slices/userSlice';
-import BackButton from '../../components/BackButton';
+import BackButton from '../../components/utils/BackButton';
 
 const SingleProfileScreen = ({route, navigation}) => {
   const {id} = route.params;
