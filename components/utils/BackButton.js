@@ -11,11 +11,11 @@ const BackButton = ({navigation}) => {
         name: 'arrow-left',
         type: 'font-awesome',
         color: 'white',
-        size: 20,
+        size: 15,
       }}
       // button at the left bottom corner
       containerStyle={tw`absolute top-0 left-0 m-3 z-50`}
-      buttonStyle={tw`bg-gray-800 rounded-xl w-12 h-12`}
+      buttonStyle={tw`bg-gray-800 rounded-xl w-10 h-10`}
     />
   );
 };

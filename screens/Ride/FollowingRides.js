@@ -34,15 +34,15 @@ const FollowingRides = ({navigation}) => {
   }, [page]);
 
   const onRefresh = () => {
-    setIsRefreshing(true);
-    setRides([]);
-    setPage(1);
-    setIsRefreshing(false);
+    dispatch(getFollowingRides(1)).then(res => {
+      setLastPage(res?.payload?.totalPages);
+      setRides(res?.payload?.rides);
+    });
   };
 
   const itemView = ({item, index}) => {
     return (
-      <View style={tw`px-3 py-2`}>
+      <View style={tw`mx-5 mb-5`}>
         <TouchableOpacity
           key={index}
           onPress={async () => {
@@ -72,14 +72,18 @@ const FollowingRides = ({navigation}) => {
                   size={40}
                 />
               )}
-              <Text style={tw`text-lg font-semibold ml-1`}>{item?.seats}</Text>
-              <Text style={tw`text-lg font-semibold ml-2`}>₹{item?.price}</Text>
+              <Text style={tw`text-lg font-semibold ml-1 text-gray-600`}>
+                {item?.seats}
+              </Text>
+              <Text style={tw`text-lg font-semibold ml-2 text-gray-600`}>
+                ₹{item?.price}
+              </Text>
             </View>
             <View style={tw`flex pr-1`}>
-              <Text style={tw`text-lg font-bold text-right`}>
+              <Text style={tw`text-lg font-bold text-right text-gray-600`}>
                 {new Date(item?.timestamp).toUTCString().substring(0, 11)}
               </Text>
-              <Text style={tw`text-sm text-right`}>
+              <Text style={tw`text-sm text-right text-black`}>
                 {new Date(item?.timestamp)
                   .toLocaleTimeString()
                   .split(':')
@@ -93,7 +97,9 @@ const FollowingRides = ({navigation}) => {
             </View>
           </View>
           <View style={tw`flex`}>
-            <Text style={tw`font-bold text-lg`}>{item?.user.name}</Text>
+            <Text style={tw`font-bold text-lg text-gray-600`}>
+              {item?.user.name}
+            </Text>
             {/* source to destination */}
             <View style={tw`flex-row my-2`}>
               <Icon
@@ -103,7 +109,7 @@ const FollowingRides = ({navigation}) => {
                 size={20}
                 style={tw`mr-1`}
               />
-              <Text style={tw`text-sm w-9/10`}>
+              <Text style={tw`text-sm w-9/10 text-black`}>
                 {item?.source.length > 40
                   ? item?.source.substring(0, 40) + '...'
                   : item?.source}
@@ -118,7 +124,7 @@ const FollowingRides = ({navigation}) => {
                 size={20}
                 style={tw`mr-1`}
               />
-              <Text style={tw`text-sm w-9/10`}>
+              <Text style={tw`text-sm w-9/10 text-black`}>
                 {item?.destination.length > 40
                   ? item?.destination.substring(0, 40) + '...'
                   : item?.destination}
@@ -131,27 +137,16 @@ const FollowingRides = ({navigation}) => {
   };
 
   const paging = () => {
-    page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);
+    page > lastPage ? setPage(lastPage) : setPage(page + 1);
   };
 
   return (
     <View style={tw`flex-1 bg-stone-100`}>
-      <View style={tw` justify-between items-center px-2`}>
+      <View style={tw` justify-between items-center mt-3`}>
         <FlatList
           data={rides}
           refreshing={isRefreshing}
           onRefresh={onRefresh}
-          ListEmptyComponent={
-            <View style={tw`flex-1 justify-center items-center`}>
-              <Button
-                title="Refresh"
-                onPress={() => {
-                  onRefresh();
-                }}
-                containerStyle={tw`w-1/2`}
-              />
-            </View>
-          }
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           onEndReached={() => {

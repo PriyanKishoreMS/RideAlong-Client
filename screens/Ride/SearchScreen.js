@@ -44,18 +44,18 @@ const SearchScreen = ({navigation, rides}) => {
                       size={40}
                     />
                   )}
-                  <Text style={tw`text-lg font-semibold ml-1`}>
+                  <Text style={tw`text-lg font-semibold ml-1 text-gray-600`}>
                     {ride.seats}
                   </Text>
-                  <Text style={tw`text-lg font-semibold ml-2`}>
+                  <Text style={tw`text-lg font-semibold ml-2 text-gray-600`}>
                     ₹{ride.price}
                   </Text>
                 </View>
                 <View style={tw`flex pr-1`}>
-                  <Text style={tw`text-lg font-bold text-right`}>
+                  <Text style={tw`text-lg font-bold text-right text-gray-600`}>
                     {new Date(ride.timestamp).toUTCString().substring(0, 11)}
                   </Text>
-                  <Text style={tw`text-sm text-right`}>
+                  <Text style={tw`text-sm text-right text-black`}>
                     {new Date(ride.timestamp)
                       .toLocaleTimeString()
                       .split(':')
@@ -69,7 +69,9 @@ const SearchScreen = ({navigation, rides}) => {
                 </View>
               </View>
               <View style={tw`flex`}>
-                <Text style={tw`font-bold text-lg`}>{ride.user.name}</Text>
+                <Text style={tw`font-bold text-lg text-gray-600`}>
+                  {ride.user.name}
+                </Text>
                 {/* source to destination */}
                 <View style={tw`flex-row my-2`}>
                   <Icon
@@ -79,7 +81,7 @@ const SearchScreen = ({navigation, rides}) => {
                     size={20}
                     style={tw`mr-1`}
                   />
-                  <Text style={tw`text-sm w-9/10`}>
+                  <Text style={tw`text-sm w-9/10 text-black`}>
                     {ride.source.length > 40
                       ? ride.source.substring(0, 40) + '...'
                       : ride.source}
@@ -94,7 +96,7 @@ const SearchScreen = ({navigation, rides}) => {
                     size={20}
                     style={tw`mr-1`}
                   />
-                  <Text style={tw`text-sm w-9/10`}>
+                  <Text style={tw`text-sm w-9/10 text-black`}>
                     {ride.destination.length > 40
                       ? ride.destination.substring(0, 40) + '...'
                       : ride.destination}

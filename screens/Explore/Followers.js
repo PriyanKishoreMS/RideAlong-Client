@@ -34,23 +34,15 @@ const Followers = ({id}) => {
   }, [page]);
 
   const onRefresh = () => {
-    setIsRefreshing(true);
-    setFollowers([]);
-    setPage(1);
-    setIsRefreshing(false);
+    dispatch(getMyFollowers(1)).then(res => {
+      console.log(res.payload, 'res.payload');
+      setLastPage(res.payload?.totalPages);
+      let arrFollowers = [...followers, ...res.payload?.followersProfiles];
+      let uniqe = new Set(arrFollowers.map(a => JSON.stringify(a)));
+      arrFollowers = Array.from(uniqe).map(a => JSON.parse(a));
+      setFollowers(arrFollowers);
+    });
   };
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     dispatch(getMyFollowers(page)).then(res => {
-  //       setLastPage(res.payload?.totalPages);
-  //       let arrFollowers = [...followers, ...res.payload?.followersProfiles];
-  //       let uniqe = new Set(arrFollowers.map(a => JSON.stringify(a)));
-  //       arrFollowers = Array.from(uniqe).map(a => JSON.parse(a));
-  //       setFollowers(arrFollowers);
-  //     });
-  //   }, []),
-  // );
 
   const paging = () => {
     page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);

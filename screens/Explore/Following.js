@@ -48,14 +48,16 @@ const Following = ({id}) => {
   };
 
   const onRefresh = () => {
-    setIsRefreshing(true);
-    setFollowing([]);
-    setPage(1);
-    setIsRefreshing(false);
+    dispatch(getMyFollowing(1)).then(res => {
+      setLastPage(res.payload?.totalPages);
+      setFollowing(res.payload?.followingProfiles);
+      setLoading(false);
+    });
   };
 
   const paging = () => {
     page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);
+    // setPage(page + 1);
   };
 
   return (

@@ -63,7 +63,7 @@ router.post('/', auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || '';
 
     const rides = await Ride.find({
@@ -72,6 +72,9 @@ router.get('/', async (req, res) => {
         {destination: {$regex: search, $options: 'i'}},
       ],
     })
+      .select(
+        '-passengers -__v -sourceLat -sourceLng -destinationLat -destinationLng -vehicleModel -vehicleNumber',
+      )
       .sort({timestamp: 1})
       .skip(page * limit)
       .limit(limit)

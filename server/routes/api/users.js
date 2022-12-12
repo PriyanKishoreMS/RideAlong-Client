@@ -18,7 +18,7 @@ const auth = require('../../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 15;
     const search = req.query.search || '';
     let sort = req.query.sort || 'date';
 
@@ -134,7 +134,7 @@ router.post('/', async (req, res) => {
 router.get('/me/following', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 12;
     const user = await User.findById(req.user.id);
 
     const following = user.following;

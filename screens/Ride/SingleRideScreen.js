@@ -446,8 +446,8 @@ const SingleRideScreen = () => {
                         />
                       </View>
                     ) : (
-                      <View>
-                        <View style={tw`bg-gray-200 p-1 w-full items-center`}>
+                      <View style={tw`mt-5`}>
+                        <View style={tw`bg-gray-200 p-2 w-full items-center`}>
                           <Text style={tw`text-lg text-gray-600`}>
                             No Pending Requests
                           </Text>
@@ -458,7 +458,7 @@ const SingleRideScreen = () => {
                             await dispatch(deleteRide(rideId));
                             navigation.navigate('RideStack');
                           }}
-                          buttonStyle={tw`bg-red-700`}
+                          buttonStyle={tw`bg-red-700 my-2`}
                         />
                       </View>
                     )}
