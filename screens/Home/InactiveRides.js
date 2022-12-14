@@ -1,21 +1,13 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Icon} from 'react-native-elements';
-import {useFocusEffect} from '@react-navigation/native';
 import tw from 'twrnc';
 
-import {getAllRides} from '../../slices/rideSlice';
+import {getMyInactiveRides} from '../../slices/rideSlice';
 import {getRideById} from '../../slices/rideSlice';
 
-const AllRides = ({navigation}) => {
+const InactiveRides = ({navigation}) => {
   const dispatch = useDispatch();
 
   const [rides, setRides] = useState([]);
@@ -24,7 +16,7 @@ const AllRides = ({navigation}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllRides(['', page])).then(res => {
+    dispatch(getMyInactiveRides(page)).then(res => {
       setLastPage(res?.payload?.totalPages);
       let arrData = [...rides, ...res?.payload?.rides];
       let uniqe = new Set(arrData.map(a => JSON.stringify(a)));
@@ -33,15 +25,8 @@ const AllRides = ({navigation}) => {
     });
   }, [page]);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     setRides([]);
-  //     setPage(1);
-  //   }, []),
-  // );
-
   const onRefresh = () => {
-    dispatch(getAllRides(['', 1])).then(res => {
+    dispatch(getMyInactiveRides(1)).then(res => {
       setLastPage(res?.payload?.totalPages);
       setRides(res?.payload?.rides);
     });
@@ -52,11 +37,11 @@ const AllRides = ({navigation}) => {
       <View style={tw`mx-5 mb-5`}>
         <TouchableOpacity
           key={index}
-          onPress={async () => {
-            await dispatch(getRideById(item?._id)).then(res =>
-              navigation.navigate('SingleRide'),
-            );
-          }}
+          //   onPress={async () => {
+          //     await dispatch(getRideById(item?._id)).then(res =>
+          //       navigation.navigate('SingleRide'),
+          //     );
+          //   }}
           style={tw`bg-white p-3 rounded-xl shadow-xl w-full`}>
           <View style={tw`flex-row justify-between`}>
             <View style={tw`flex-row items-center`}>
@@ -144,27 +129,26 @@ const AllRides = ({navigation}) => {
   };
 
   const paging = () => {
-    page > lastPage ? setPage(lastPage + 1) : setPage(page + 1);
+    page > lastPage ? setPage(lastPage) : setPage(page + 1);
   };
 
   return (
     <View style={tw`flex-1 bg-stone-100`}>
+      <View style={tw`flex-row items-center mx-5`}>
+        <Text style={tw`text-2xl font-bold mt-5`}>Past Rides</Text>
+        <Icon
+          name="circle"
+          type="material"
+          color="#b71c1c"
+          size={20}
+          style={tw`ml-2 mt-5`}
+        />
+      </View>
       <View style={tw` justify-between items-center mt-3`}>
         <FlatList
-          onRefresh={onRefresh}
-          refreshing={isRefreshing}
           data={rides}
-          ListEmptyComponent={
-            onRefresh ? (
-              <View style={tw`flex-1 justify-center items-center`}>
-                <ActivityIndicator size="large" color="#2196f3" />
-              </View>
-            ) : (
-              <View style={tw`flex-1 justify-center items-center`}>
-                <Text style={tw`text-lg font-bold`}>No Rides Found</Text>
-              </View>
-            )
-          }
+          refreshing={isRefreshing}
+          onRefresh={onRefresh}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           onEndReached={() => {
@@ -179,4 +163,4 @@ const AllRides = ({navigation}) => {
   );
 };
 
-export default AllRides;
+export default InactiveRides;

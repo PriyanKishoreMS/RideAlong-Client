@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Ride = require('../../models/Ride');
 const InactiveRide = require('../../models/InactiveRide');
@@ -97,10 +98,79 @@ router.get('/', async (req, res) => {
 // get all rides by user
 router.get('/me', auth, async (req, res) => {
   try {
-    const rides = await Ride.find({user: req.user.id})
-      .sort({date: 1})
-      .populate('user', ['name', 'photoURL']);
-    res.json(rides);
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const user = await User.findById(req.user.id);
+
+    const ridesCreatedArray = [];
+    const ridesJoinedArray = [];
+
+    user.ridesCreated.map(ride => {
+      mongoose.Types.ObjectId(ride);
+      ridesCreatedArray.push(ride);
+    });
+
+    user.ridesJoined.map(ride => {
+      mongoose.Types.ObjectId(ride);
+      ridesJoinedArray.push(ride);
+    });
+
+    const rides = await Ride.find({
+      $or: [{_id: {$in: ridesCreatedArray}}, {_id: {$in: ridesJoinedArray}}],
+    })
+      .select(
+        '-passengers -__v -sourceLat -sourceLng -destinationLat -destinationLng -vehicleModel -vehicleNumber',
+      )
+      .sort({timestamp: 1})
+      .populate('user', ['name', 'photoURL'])
+      .skip(page * limit)
+      .limit(limit);
+
+    const total = await InactiveRide.countDocuments({user: req.user.id});
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({rides, totalPages});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.get('/me/inactive', auth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const user = await User.findById(req.user.id);
+
+    const ridesCreatedArray = [];
+    const ridesJoinedArray = [];
+
+    user.ridesCreatedInactive.map(ride => {
+      mongoose.Types.ObjectId(ride);
+      ridesCreatedArray.push(ride);
+    });
+
+    user.ridesJoinedInactive.map(ride => {
+      mongoose.Types.ObjectId(ride);
+      ridesJoinedArray.push(ride);
+    });
+
+    const rides = await InactiveRide.find({
+      $or: [{_id: {$in: ridesCreatedArray}}, {_id: {$in: ridesJoinedArray}}],
+    })
+      .select(
+        '-passengers -__v -sourceLat -sourceLng -destinationLat -destinationLng -vehicleModel -vehicleNumber',
+      )
+      .sort({timestamp: -1})
+      .populate('user', ['name', 'photoURL'])
+      .skip(page * limit)
+      .limit(limit);
+
+    const total = await InactiveRide.countDocuments({user: req.user.id});
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({rides, totalPages});
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

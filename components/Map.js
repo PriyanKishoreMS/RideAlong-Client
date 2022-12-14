@@ -46,7 +46,7 @@ const Map = () => {
   return (
     <MapView
       ref={mapRef}
-      style={tw`flex-1`}
+      style={tw`h-4/7`}
       region={{
         latitude: origin.location.lat,
         longitude: origin.location.lng,

@@ -185,6 +185,58 @@ router.get('/me/followers', auth, async (req, res) => {
   }
 });
 
+router.get('/:id/following', auth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const user = await User.findById(req.params.id);
+    const following = user.following;
+
+    const followingProfiles = await User.find({
+      _id: {$in: following},
+    })
+      .select('name photoURL')
+      .skip(page * limit)
+      .limit(limit);
+
+    const total = await User.countDocuments({
+      _id: {$in: following},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({followingProfiles, totalPages});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.get('/:id/followers', auth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const user = await User.findById(req.params.id);
+    const followers = user.followers;
+
+    const followersProfiles = await User.find({
+      _id: {$in: followers},
+    })
+      .select('name photoURL')
+      .skip(page * limit)
+      .limit(limit);
+
+    const total = await User.countDocuments({
+      _id: {$in: followers},
+    });
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({followersProfiles, totalPages});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // put request to update home address
 router.put('/me/home', auth, async (req, res) => {
   try {

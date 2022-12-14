@@ -10,6 +10,7 @@ import {Button} from 'react-native-elements';
 import {postUser} from '../slices/userSlice';
 import {AuthContext} from '../hooks/useAuth';
 import {getSingleUser, getSingleProfile} from '../slices/profileSlice';
+import {Icon} from 'react-native-elements';
 import {SafeAreaView} from 'react-native';
 import {GOOGLE_WEBCLIENTID} from '@env';
 
@@ -55,12 +56,50 @@ const LoginScreen = () => {
         source={require('../assets/images/carbgw.jpg')}
         style={tw`absolute w-full h-full opacity-75`}
       />
-      {/* blur background image */}
-      <View style={tw`flex items-center justify-center h-full`}>
+      {/* <View style={tw`mb-10 mt-15 justify-center rounded-xl p-3 px-10 w-full`}>
+        <View style={tw`flex-row`}>
+          <Icon
+            name="bolt"
+            type="material"
+            size={30}
+            color="#ca8a04"
+            style={tw``}
+          />
+          <Text style={tw`text-black font-medium text-xl `}>
+            Rides for Free!
+          </Text>
+        </View>
+        <View style={tw`flex-row`}>
+          <Icon
+            name="bolt"
+            type="material"
+            size={30}
+            color="#ca8a04"
+            style={tw``}
+          />
+          <Text style={tw`text-black font-medium text-xl `}>
+            No more lonely rides!
+          </Text>
+        </View>
+        <View style={tw`flex-row`}>
+          <Icon
+            name="bolt"
+            type="material"
+            size={30}
+            color="#ca8a04"
+            style={tw``}
+          />
+          <Text style={tw`text-black font-medium text-xl `}>
+            Find a ride buddy!
+          </Text>
+        </View>
+      </View> */}
+      <View style={tw`flex items-center justify-center`}>
         <Image
           source={require('../assets/images/RideAlong.png')}
-          style={tw` opacity-100 w-98 h-35`}
+          style={tw` opacity-100 w-100 h-20 mt-55`}
         />
+
         <Button
           title="Google Sign-In"
           onPress={() => handleUserSignIn()}
@@ -72,6 +111,7 @@ const LoginScreen = () => {
             size: 20,
           }}
           buttonStyle={{
+            marginTop: 30,
             backgroundColor: 'black',
             width: 200,
             height: 40,

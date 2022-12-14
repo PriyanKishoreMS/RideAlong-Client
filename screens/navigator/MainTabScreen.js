@@ -14,6 +14,10 @@ import NotificationScreen from '../Notification/NotificationScreen';
 import SingleRideScreen from '../Ride/SingleRideScreen';
 import HomeAddressScreen from '../Home/HomeAddressScreen';
 import WorkAddressScreen from '../Home/WorkAddressScreen';
+import FollowingById from '../Explore/FollowingById';
+import FollowersById from '../Explore/FollowersById';
+import ActiveRides from '../Home/ActiveRides';
+import InactiveRides from '../Home/InactiveRides';
 
 const HomeStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
@@ -170,6 +174,20 @@ const MainStackComponent = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="ActiveRides"
+        component={ActiveRides}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="InactiveRides"
+        component={InactiveRides}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -200,6 +218,16 @@ const ExploreStackComponent = () => {
         component={SingleProfileScreen}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="FollowersById"
+        component={FollowersById}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FollowingById"
+        component={FollowingById}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
@@ -215,11 +243,6 @@ const RideStackComponent = () => {
       <Stack.Screen
         name="SingleRide"
         component={SingleRideScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SingleProfile"
-        component={SingleProfileScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

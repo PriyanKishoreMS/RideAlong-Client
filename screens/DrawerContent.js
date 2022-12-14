@@ -33,8 +33,7 @@ export function DrawerContent(props) {
             </Caption>
           </View>
         </View>
-        <View style={tw`mt-5`}>
-          {/* follower and following count */}
+        {/* <View style={tw`mt-5`}>
           <View style={tw`flex-row `}>
             <TouchableOpacity
               style={tw`flex-1 flex-row justify-center items-center`}>
@@ -47,7 +46,7 @@ export function DrawerContent(props) {
               <Caption style={tw`text-sm`}>Following</Caption>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
         <View style={tw`border-b border-gray-300 mt-5`} />
         <Drawer.Section style={tw`mt-10`}>
           <DrawerItem

@@ -71,9 +71,9 @@ export const getRideById = createAsyncThunk('ride/getRideById', async id => {
     .catch(err => console.log(err, 'error from rideSlice'));
 });
 
-export const getMyRides = createAsyncThunk('ride/getMyRides', async () => {
+export const getMyRides = createAsyncThunk('ride/getMyRides', async page => {
   var token = await AsyncStorage.getItem('token');
-  return await fetch(`http://${IP}/api/ride/me`, {
+  return await fetch(`http://${IP}/api/ride/me?page=${page}`, {
     method: 'GET',
     headers: {
       'auth-token': token,
@@ -84,6 +84,23 @@ export const getMyRides = createAsyncThunk('ride/getMyRides', async () => {
     .then(res => res.json())
     .catch(err => console.log(err, 'error from rideSlice'));
 });
+
+export const getMyInactiveRides = createAsyncThunk(
+  'ride/getMyInactiveRides',
+  async page => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/ride/me/inactive?page=${page}`, {
+      method: 'GET',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err, 'error from rideSlice'));
+  },
+);
 
 export const getFollowingRides = createAsyncThunk(
   'ride/getFollowingRides',
@@ -170,6 +187,17 @@ const rideSlice = createSlice({
       state.ride = action.payload;
     },
     [getMyRides.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getMyInactiveRides.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getMyInactiveRides.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.ride = action.payload;
+    },
+    [getMyInactiveRides.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

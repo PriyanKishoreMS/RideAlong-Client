@@ -2,7 +2,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {selectOrigin} from '../slices/navSlice';
@@ -22,7 +22,12 @@ const RideCard = () => {
         <View style={origin ? {opacity: 1} : {opacity: 0.2}}>
           <Text style={tw`text-xl font-semibold text-gray-700`}>
             Schedule ride{' '}
-            <Icon name="timer-outline" color="#2196F3" size={20} />
+            <Icon
+              name="timer-outline"
+              type="ionicon"
+              color="#2196F3"
+              size={20}
+            />
           </Text>
           <Text style={tw`text-gray-500`}>Select your destination</Text>
           <Image
@@ -39,6 +44,7 @@ const RideCard = () => {
         <View style={tw`flex-row items-center`}>
           <Icon
             name="chevron-forward"
+            type="ionicon"
             size={40}
             color="gray"
             style={origin ? {opacity: 1} : {opacity: 0.2}}

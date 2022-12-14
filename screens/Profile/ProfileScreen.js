@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {correctCase} from '../../components/utils/correctCase';
 
 import {AuthContext} from '../../hooks/useAuth';
+import {getProfileById} from '../../slices/profileSlice';
 import {getMyProfile} from '../../slices/profileSlice';
 import MenuButton from '../../components/utils/MenuButton';
 
@@ -43,6 +44,14 @@ const HomeScreen = ({navigation}) => {
       {userProfile && (
         //shadow style for the card
         <TouchableOpacity
+          onPress={async () => {
+            dispatch(getProfileById(userProfile?.user?._id)).then(res => {
+              navigation.navigate('Map');
+              navigation.navigate('SingleProfile', {
+                id: userProfile?.user?._id,
+              });
+            });
+          }}
           style={tw` rounded-xl bg-white shadow-lg w-full px-4 py-3`}>
           <View style={tw`flex-row justify-between`}>
             <View>

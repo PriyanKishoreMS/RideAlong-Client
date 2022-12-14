@@ -53,13 +53,25 @@ const SingleProfileScreen = ({route, navigation}) => {
                 </View>
                 <View style={tw`flex-row items-center justify-center`}>
                   <TouchableOpacity
+                    onPress={() => {
+                      navigation.push('FollowersById', {
+                        activeUser: profile?.profile?.user?._id,
+                        activeUserName: profile?.profile?.user?.name,
+                      });
+                    }}
                     style={tw`flex p-3 bg-slate-200 shadow-lg rounded-lg items-center justify-center mr-3`}>
                     <Text style={tw`text-xl text-gray-600`}>
-                      {follow.length}
+                      {follow?.length}
                     </Text>
                     <Text style={tw`text-base text-gray-600`}>Followers</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    onPress={() => {
+                      navigation.push('FollowingById', {
+                        activeUser: profile?.profile?.user?._id,
+                        activeUserName: profile?.profile?.user?.name,
+                      });
+                    }}
                     style={tw`flex p-3 bg-slate-200 shadow-lg rounded-lg items-center justify-center`}>
                     <Text style={tw`text-xl text-gray-600`}>
                       {profile?.profile?.user?.following.length}
@@ -101,38 +113,45 @@ const SingleProfileScreen = ({route, navigation}) => {
               </TouchableOpacity>
             </View>
             <View style={tw`flex-row items-center px-3`}>
-              <TouchableOpacity
-                style={
-                  isFollow === true
-                    ? tw`flex items-center justify-center shadow-lg bg-slate-100 py-1 px-3 rounded-lg w-full mt-5`
-                    : tw`flex items-center justify-center shadow-xl shadow-white bg-slate-500 py-1 px-3 rounded-lg w-full mt-5`
-                }
-                onPress={() => {
-                  dispatch(postFriend(profile?.profile?.user?._id)).then(() => {
-                    setIsFollow(!isFollow);
-                  });
-                }}>
-                {isFollow === true ? (
-                  <Text style={tw`text-lg text-gray-600 font-bold`}>
-                    Following
-                  </Text>
-                ) : (
-                  <Text style={tw`text-lg text-white font-bold`}>Follow</Text>
-                )}
-              </TouchableOpacity>
+              {id !== profile?.profile?.user?._id && (
+                <TouchableOpacity
+                  style={
+                    isFollow === true
+                      ? tw`flex items-center justify-center shadow-lg bg-slate-100 py-1 px-3 rounded-lg w-full mt-5`
+                      : tw`flex items-center justify-center shadow-xl shadow-white bg-slate-500 py-1 px-3 rounded-lg w-full mt-5`
+                  }
+                  onPress={() => {
+                    dispatch(postFriend(profile?.profile?.user?._id)).then(
+                      () => {
+                        setIsFollow(!isFollow);
+                      },
+                    );
+                  }}>
+                  {isFollow === true ? (
+                    <Text style={tw`text-lg text-gray-600 font-bold`}>
+                      Following
+                    </Text>
+                  ) : (
+                    <Text style={tw`text-lg text-white font-bold`}>Follow</Text>
+                  )}
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           <View style={tw`m-3 items-center justify-center`}>
             <Text style={tw`text-xl text-slate-500 mb-3 font-bold`}>
-              {profile?.rides?.length > 0 ? 'Active Rides' : 'No Active Rides'}
+              {profile?.rides?.length > 0
+                ? 'Active Rides Hosted'
+                : 'No Active Rides Hosted'}
             </Text>
             {profile?.rides?.map((ride, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={async () => {
-                  await dispatch(getRideById(ride._id)).then(res =>
-                    navigation.navigate('SingleRide'),
-                  );
+                  await dispatch(getRideById(ride._id)).then(res => {
+                    navigation.navigate('Ride');
+                    navigation.navigate('SingleRide');
+                  });
                 }}
                 style={tw`bg-slate-100 shadow-black shadow-xl p-3 rounded-xl mb-3 w-full`}>
                 <View style={tw`flex-row justify-between`}>
@@ -160,7 +179,7 @@ const SingleProfileScreen = ({route, navigation}) => {
                       {ride.seats}
                     </Text>
                     <Text style={tw`text-lg font-semibold ml-2 text-gray-600`}>
-                      ₹{ride.price}
+                      {ride?.price === 1 ? 'Free' : '₹' + ride?.price}
                     </Text>
                   </View>
                   <View style={tw`flex pr-1`}>

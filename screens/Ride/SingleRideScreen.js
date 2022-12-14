@@ -114,7 +114,7 @@ const SingleRideScreen = () => {
                     style={tw`mr-1`}
                   />
                   <Text style={tw`text-center py-2 text-lg font-bold`}>
-                    ₹{rideData?.price}
+                    {rideData?.price === 1 ? 'Free' : '₹' + rideData?.price}
                   </Text>
                 </View>
               </View>
@@ -203,6 +203,7 @@ const SingleRideScreen = () => {
                 <TouchableOpacity
                   onPress={async () => {
                     await dispatch(getProfileById(rideData?.user?._id));
+                    navigation.navigate('Map');
                     navigation.navigate('SingleProfile', {
                       id: userId,
                     });

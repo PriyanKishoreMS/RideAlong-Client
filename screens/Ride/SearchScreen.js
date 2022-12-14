@@ -48,7 +48,7 @@ const SearchScreen = ({navigation, rides}) => {
                     {ride.seats}
                   </Text>
                   <Text style={tw`text-lg font-semibold ml-2 text-gray-600`}>
-                    ₹{ride.price}
+                    {ride?.price === 1 ? 'Free' : '₹' + ride?.price}
                   </Text>
                 </View>
                 <View style={tw`flex pr-1`}>

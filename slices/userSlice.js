@@ -201,6 +201,52 @@ export const getMyAddress = createAsyncThunk('user/getMyAddress', async () => {
     .catch(err => console.error(err, 'error from getMyAddress'));
 });
 
+export const getFollowingByUserId = createAsyncThunk(
+  'user/getFollowingByUserId',
+  async params => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(
+      `http://${IP}/api/users/${params[0]}/following?page=${params[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          'auth-token': token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then(res => res.json())
+      .then(data => {
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getFollowingByUserId'));
+  },
+);
+
+export const getFollowersByUserId = createAsyncThunk(
+  'user/getFollowersByUserId',
+  async params => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(
+      `http://${IP}/api/users/${params[0]}/followers?page=${params[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          'auth-token': token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then(res => res.json())
+      .then(data => {
+        return data;
+      })
+      .catch(err => console.error(err, 'error from getFollowersByUserId'));
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -310,6 +356,28 @@ const userSlice = createSlice({
       state.profile = action.payload;
     },
     [getMyAddress.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getFollowingByUserId.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getFollowingByUserId.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getFollowingByUserId.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [getFollowersByUserId.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getFollowersByUserId.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [getFollowersByUserId.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
