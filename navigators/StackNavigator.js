@@ -107,15 +107,4 @@ const StackNavigator = () => {
   );
 };
 
-// const DynamicHeader = route => {
-//   // console.log(route.navigation.getState());
-//   const {routes} = route.navigation.getState();
-//   const currentRoute = routes[routes.length - 1].name;
-//   console.log(currentRoute);
-//   if (currentRoute === 'Profile') {
-//     return false;
-//   }
-//   return true;
-// };
-
 export default StackNavigator;

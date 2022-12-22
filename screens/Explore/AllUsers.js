@@ -59,7 +59,7 @@ const AllUsers = () => {
   const itemView = ({item, index}) => {
     return (
       <TouchableOpacity
-        style={tw`flex-row mx-2 mb-0.5 p-2.5 bg-white shadow-md items-center justify-between`}
+        style={tw`flex-row mb-1 p-2.5 bg-white shadow-md rounded-md items-center justify-between`}
         onPress={async () => {
           await dispatch(getProfileById(item?._id));
           navigation.navigate('SingleProfile', {
@@ -128,7 +128,7 @@ const AllUsers = () => {
   };
 
   return (
-    <View style={tw`bg-stone-100`}>
+    <View style={tw`bg-stone-100 mx-5 mt-1.5`}>
       <View>
         <FlatList
           data={data}

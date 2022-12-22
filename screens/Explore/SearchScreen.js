@@ -24,12 +24,12 @@ const SearchScreen = ({data}) => {
   }, [followChange]);
 
   return (
-    <ScrollView style={tw`bg-stone-100`}>
+    <ScrollView style={tw`bg-stone-100 mt-1.5`}>
       {data &&
         data?.user?.map((item, index) => {
           return (
             <TouchableOpacity
-              style={tw`flex-row mx-2 mt-0.25 mb-0.25 p-2.5 bg-white shadow-md items-center justify-between`}
+              style={tw`flex-row mx-5 mt-0.25 mb-1 rounded-md p-2.5 bg-white shadow-md items-center justify-between`}
               onPress={async () => {
                 await dispatch(getProfileById(item?._id));
                 navigation.navigate('SingleProfile', {

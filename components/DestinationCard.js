@@ -35,7 +35,7 @@ const DestinationCard = () => {
           style={tw`absolute top-3 left-5 z-5 rounded-full`}>
           <Icon name="chevron-back" type="ionicon" />
         </TouchableOpacity>
-        <Text style={tw`text-center py-2 text-xl`}>
+        <Text style={tw`text-center py-2 text-xl text-gray-800`}>
           Select a destination, {name.substring(0, name.indexOf(' '))}
         </Text>
         <View style={tw`border-t border-gray-200 flex-shrink `}>
@@ -88,7 +88,9 @@ const InputStyles = StyleSheet.create({
     paddingTop: 20,
     marginBottom: 20,
   },
+  // change placeholder color
   textInput: {
+    color: '#000',
     fontSize: 16,
     backgroundColor: '#DDDDDF',
     borderRadius: 10,
@@ -97,4 +99,8 @@ const InputStyles = StyleSheet.create({
     // paddingHorizontal: 20,
     paddingBottom: 0,
   },
+  description: {
+    color: '#000',
+  },
+  listView: {},
 });

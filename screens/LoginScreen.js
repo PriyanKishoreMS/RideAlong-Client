@@ -1,22 +1,20 @@
-import {View, Text, Image} from 'react-native';
+import {View, Image} from 'react-native';
 import React, {useEffect, useContext, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import tw from 'twrnc';
 import {Button} from 'react-native-elements';
 
 import {postUser} from '../slices/userSlice';
 import {AuthContext} from '../hooks/useAuth';
-import {getSingleUser, getSingleProfile} from '../slices/profileSlice';
-import {Icon} from 'react-native-elements';
+import {checkUserProfileStatus} from '../slices/profileSlice';
 import {SafeAreaView} from 'react-native';
 import {GOOGLE_WEBCLIENTID} from '@env';
 
 const LoginScreen = () => {
   const {googleSignin} = useContext(AuthContext);
-  const {profile, setProfile} = useContext(AuthContext);
+  const {setProfile} = useContext(AuthContext);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -37,10 +35,9 @@ const LoginScreen = () => {
         photoURL: userInfo.photoURL,
       };
       await dispatch(postUser({users}));
-      dispatch(getSingleUser())
+      dispatch(checkUserProfileStatus())
         .then(res => {
           if (res.payload == 200) {
-            dispatch(getSingleProfile());
             setProfile(false);
           } else setProfile(true);
         })
@@ -56,48 +53,10 @@ const LoginScreen = () => {
         source={require('../assets/images/carbgw.jpg')}
         style={tw`absolute w-full h-full opacity-75`}
       />
-      {/* <View style={tw`mb-10 mt-15 justify-center rounded-xl p-3 px-10 w-full`}>
-        <View style={tw`flex-row`}>
-          <Icon
-            name="bolt"
-            type="material"
-            size={30}
-            color="#ca8a04"
-            style={tw``}
-          />
-          <Text style={tw`text-black font-medium text-xl `}>
-            Rides for Free!
-          </Text>
-        </View>
-        <View style={tw`flex-row`}>
-          <Icon
-            name="bolt"
-            type="material"
-            size={30}
-            color="#ca8a04"
-            style={tw``}
-          />
-          <Text style={tw`text-black font-medium text-xl `}>
-            No more lonely rides!
-          </Text>
-        </View>
-        <View style={tw`flex-row`}>
-          <Icon
-            name="bolt"
-            type="material"
-            size={30}
-            color="#ca8a04"
-            style={tw``}
-          />
-          <Text style={tw`text-black font-medium text-xl `}>
-            Find a ride buddy!
-          </Text>
-        </View>
-      </View> */}
       <View style={tw`flex items-center justify-center`}>
         <Image
           source={require('../assets/images/RideAlong.png')}
-          style={tw` opacity-100 w-100 h-20 mt-55`}
+          style={tw` opacity-100 w-100 h-20 mt-55 mb-10`}
         />
 
         <Button
@@ -111,7 +70,6 @@ const LoginScreen = () => {
             size: 20,
           }}
           buttonStyle={{
-            marginTop: 30,
             backgroundColor: 'black',
             width: 200,
             height: 40,

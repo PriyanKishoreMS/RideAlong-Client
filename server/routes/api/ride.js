@@ -123,7 +123,7 @@ router.get('/me', auth, async (req, res) => {
       )
       .sort({timestamp: 1})
       .populate('user', ['name', 'photoURL'])
-      .skip(page * limit)
+      .skip(Math.abs(page) * limit)
       .limit(limit);
 
     const total = await InactiveRide.countDocuments({user: req.user.id});
@@ -208,15 +208,15 @@ cron.schedule('0 */12 * * *', async () => {
       inactiveride.isNew = true;
       await inactiveride.save();
       ride.passengers.forEach(async passenger => {
-        const user = await User.findById(passenger.user);
-        user.ridesJoined.splice(user.ridesJoined.indexOf(ride._id), 1);
-        user.ridesJoinedInactive.push(ride._id);
-        await user.save();
+        await User.findByIdAndUpdate(passenger.user, {
+          $pull: {ridesJoined: ride._id},
+          $push: {ridesJoinedInactive: ride._id},
+        });
       });
-      const host = await User.findById(ride.user);
-      host.ridesCreated.splice(host.ridesCreated.indexOf(ride._id), 1);
-      host.ridesCreatedInactive.push(ride._id);
-      await host.save();
+      await User.findByIdAndUpdate(ride.user, {
+        $pull: {ridesCreated: ride._id},
+        $push: {ridesCreatedInactive: ride._id},
+      });
       await Ride.findByIdAndRemove(ride._id);
     });
     console.log('Rides updated');

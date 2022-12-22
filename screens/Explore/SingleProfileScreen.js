@@ -20,7 +20,6 @@ const SingleProfileScreen = ({route, navigation}) => {
   const {id} = route.params;
   const dispatch = useDispatch();
   const [profile, setProfile] = useState(null);
-  const [follow, setFollow] = useState([]);
   const [isFollow, setIsFollow] = useState(false);
 
   var profileData = useSelector(state => state?.profile?.profile);
@@ -30,7 +29,7 @@ const SingleProfileScreen = ({route, navigation}) => {
 
   useEffect(() => {
     setProfile(profileData);
-    setFollow(followData);
+    console.log('profileData', profileData);
     if (followData?.includes(id)) setIsFollow(true);
   }, []);
 
@@ -61,7 +60,9 @@ const SingleProfileScreen = ({route, navigation}) => {
                     }}
                     style={tw`flex p-3 bg-slate-200 shadow-lg rounded-lg items-center justify-center mr-3`}>
                     <Text style={tw`text-xl text-gray-600`}>
-                      {follow?.length}
+                      {profile?.followersCount === 0
+                        ? profile?.followersCount
+                        : profile?.followersCount - 1}
                     </Text>
                     <Text style={tw`text-base text-gray-600`}>Followers</Text>
                   </TouchableOpacity>
@@ -74,7 +75,9 @@ const SingleProfileScreen = ({route, navigation}) => {
                     }}
                     style={tw`flex p-3 bg-slate-200 shadow-lg rounded-lg items-center justify-center`}>
                     <Text style={tw`text-xl text-gray-600`}>
-                      {profile?.profile?.user?.following.length}
+                      {profile?.followingCount === 0
+                        ? profile?.followingCount
+                        : profile?.followingCount - 1}
                     </Text>
                     <Text style={tw`text-base text-gray-600`}>Following</Text>
                   </TouchableOpacity>

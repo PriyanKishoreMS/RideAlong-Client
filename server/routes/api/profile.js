@@ -51,25 +51,37 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+router.get('/check', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.user.id,
+    });
+
+    if (profile) {
+      res.status(200).json({msg: 'Profile exists'});
+    } else {
+      res.status(404).json({msg: 'Profile not found'});
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 router.get('/me', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate('user', ['name', 'photoURL', 'following', 'followers']);
+    })
+      .populate('user', ['name', 'photoURL'])
+      .select('vehicleType vehicleNumber vehicleModel');
     console.log(profile, 'profile from profile/me');
-
-    const rides = await Ride.find({user: req.user.id}).sort({date: 1});
 
     if (!profile) {
       return res.status(400).json({msg: 'Profile not found'});
     }
 
-    const response = {
-      profile,
-      rides,
-    };
-
-    res.json(response);
+    res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -81,13 +93,16 @@ router.get('/:id', async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.params.id,
-    }).populate('user', [
-      'name',
-      'photoURL',
-      'email',
-      'following',
-      'followers',
-    ]);
+    })
+      .select('college location mobile')
+      .populate('user', ['name', 'photoURL', 'email']);
+
+    const follow = await User.findById(req.params.id).select(
+      'followers following',
+    );
+
+    const followingCount = follow.following.length;
+    const followersCount = follow.followers.length;
 
     const rides = await Ride.find({user: req.params.id}).sort({date: 1});
 
@@ -95,22 +110,11 @@ router.get('/:id', async (req, res) => {
       return res.status(400).json({msg: 'Profile not found'});
     }
 
-    // const following = profile.user.following;
-    // const followers = profile.user.followers;
-
-    // const followingProfiles = await User.find({
-    //   _id: {$in: following},
-    // }).select('name photoURL');
-
-    // const followersProfiles = await User.find({
-    //   _id: {$in: followers},
-    // }).select('name photoURL');
-
     const response = {
       profile,
       rides,
-      // followingProfiles,
-      // followersProfiles,
+      followingCount,
+      followersCount,
     };
 
     res.json(response);

@@ -18,7 +18,7 @@ const auth = require('../../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 15;
+    const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || '';
     let sort = req.query.sort || 'date';
 
@@ -91,7 +91,7 @@ router.post('/', async (req, res) => {
     if (user) {
       console.log('User already exists');
       user = await User.findOneAndUpdate({photoURL}, {new: true});
-      console.log('user updated', user);
+      console.log('user updated');
       const payload = {
         user: {
           id: user.id,
@@ -134,7 +134,7 @@ router.post('/', async (req, res) => {
 router.get('/me/following', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 12;
+    const limit = parseInt(req.query.limit) || 10;
     const user = await User.findById(req.user.id);
 
     const following = user.following;

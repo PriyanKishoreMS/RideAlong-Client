@@ -31,12 +31,12 @@ export const postProfile = createAsyncThunk(
   },
 );
 
-export const getSingleUser = createAsyncThunk(
-  'profile/getSingleUser',
+export const checkUserProfileStatus = createAsyncThunk(
+  'profile/checkUserProfileStatus',
   async () => {
     var token = await AsyncStorage.getItem('token');
-    // console.log(token, 'token from getSingleUser');
-    return await fetch(`http://${IP}/api/profile/me`, {
+    // console.log(token, 'token from checkUserProfileStatus');
+    return await fetch(`http://${IP}/api/profile/check`, {
       method: 'GET',
       headers: {
         'auth-token': token,
@@ -48,7 +48,7 @@ export const getSingleUser = createAsyncThunk(
         return res.status;
       })
       // .then(data => console.log(data))
-      .catch(err => console.error(err, 'error from getSingleUser'));
+      .catch(err => console.error(err, 'error from checkUserProfileStatus'));
   },
 );
 
@@ -117,14 +117,14 @@ const profileSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    [getSingleUser.pending]: (state, action) => {
+    [checkUserProfileStatus.pending]: (state, action) => {
       state.loading = true;
     },
-    [getSingleUser.fulfilled]: (state, action) => {
+    [checkUserProfileStatus.fulfilled]: (state, action) => {
       state.loading = false;
       state.profile = [action.payload];
     },
-    [getSingleUser.rejected]: (state, action) => {
+    [checkUserProfileStatus.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

@@ -40,23 +40,6 @@ const MainTabScreen = () => {
         backgroundColor: '#e2e8f0',
         borderTopWidth: 1,
         borderTopColor: '#cbd5e1',
-        // height: 55,
-        // position: 'absolute',
-        // bottom: 10,
-        // left: 10,
-        // right: 10,
-        // elevation: 2,
-        // borderRadius: 14,
-        // margin: 10,
-        // borderTopLeftRadius: 14,
-        // borderTopRightRadius: 14,
-        // borderBottomLeftRadius: 14,
-        // borderBottomRightRadius: 14,
-        // borderLeftWidth: 0.2,
-        // borderRightWidth: 0.2,
-        // position: 'absolute',
-        // overflow: 'hidden',
-        // opacity: 0.8,
       }}>
       <Tab.Screen
         name="Home"

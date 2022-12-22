@@ -83,7 +83,8 @@ const ProfileCreateScreen = () => {
             <Button
               title="Submit"
               onPress={() => handleProfileSubmit()}
-              style={tw`bg-blue-500 w-1/2`}
+              containerStyle={tw`bg-black w-3/4 mt-4`}
+              buttonStyle={tw`bg-black w-full`}
             />
           </View>
         </KeyboardAvoidingView>

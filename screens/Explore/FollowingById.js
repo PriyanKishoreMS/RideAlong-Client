@@ -58,12 +58,15 @@ const FollowingById = ({route}) => {
   };
 
   const paging = () => {
-    page > lastPage ? null : setPage(page + 1);
-    // setPage(page + 1);
+    if (page < lastPage) {
+      setPage(page + 1);
+    }
   };
 
   return (
-    <View style={tw`bg-stone-100`} showsVerticalScrollIndicator={false}>
+    <View
+      style={tw`bg-stone-100 mt-1.5 mb-13`}
+      showsVerticalScrollIndicator={false}>
       <View>
         <Text style={tw`text-xl font-bold text-gray-800 m-3`}>
           {correctCase(activeUserName)}'s Following
@@ -78,7 +81,7 @@ const FollowingById = ({route}) => {
         ListFooterComponent={renderLoader}
         renderItem={({item, index}) => (
           <TouchableOpacity
-            style={tw`flex-row mx-2 mb-0.5 p-2.5 bg-white shadow-md items-center justify-between`}
+            style={tw`flex-row mx-5 rounded-md mb-1 p-2.5 bg-white shadow-md items-center justify-between`}
             onPress={async () => {
               dispatch(getProfileById(item?._id)).then(res => {
                 navigation.push('SingleProfile', {

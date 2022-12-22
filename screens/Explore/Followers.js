@@ -49,7 +49,7 @@ const Followers = ({id}) => {
   };
 
   return (
-    <View style={tw`bg-stone-100`} showsVerticalScrollIndicator={false}>
+    <View style={tw`bg-stone-100 mt-1.5`} showsVerticalScrollIndicator={false}>
       <FlatList
         data={followers}
         refreshing={isRefreshing}
@@ -59,7 +59,7 @@ const Followers = ({id}) => {
         onEndReached={() => paging()}
         renderItem={({item, index}) => (
           <TouchableOpacity
-            style={tw`flex-row mx-2 mb-0.5 p-2.5 bg-white shadow-md items-center justify-between`}
+            style={tw`flex-row mx-5 mb-1 p-2.5 bg-white rounded-md shadow-md items-center justify-between`}
             onPress={async () => {
               dispatch(getProfileById(item?._id)).then(res => {
                 navigation.navigate('SingleProfile', {

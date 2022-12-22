@@ -23,7 +23,7 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     dispatch(getMyProfile())
       .then(res => {
-        setUserProfile(res.payload.profile);
+        setUserProfile(res.payload);
       })
       .catch(err => {
         console.log(err);

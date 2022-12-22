@@ -60,13 +60,15 @@ const SetDestination = () => {
         <Text style={tw`text-base font-semibold pr-2 text-gray-700`}>Home</Text>
         {address?.home?.desc ? (
           // create marquee effect
-          <Text style={tw`font-normal `}>
+          <Text style={tw`font-normal text-gray-600`}>
             {address?.home?.desc?.length > 30
               ? address?.home?.desc.substring(0, 30) + '...'
               : address?.home?.desc}
           </Text>
         ) : (
-          <Text style={tw`font-normal`}>Save your Home Address</Text>
+          <Text style={tw`font-normal text-gray-600`}>
+            Save your Home Address
+          </Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity
@@ -95,13 +97,15 @@ const SetDestination = () => {
         <Text style={tw`text-base font-semibold pr-2 text-gray-700`}>Work</Text>
         {address?.work?.desc ? (
           // create marquee effect
-          <Text style={tw`font-normal `}>
+          <Text style={tw`font-normal text-gray-600`}>
             {address?.work?.desc?.length > 30
               ? address?.work?.desc.substring(0, 30) + '...'
               : address?.work?.desc}
           </Text>
         ) : (
-          <Text style={tw`font-normal`}>Save your Work Address</Text>
+          <Text style={tw`font-normal text-gray-600`}>
+            Save your Work Address
+          </Text>
         )}
       </TouchableOpacity>
     </View>
