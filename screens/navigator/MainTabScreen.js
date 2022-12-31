@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {Icon} from 'react-native-elements';
+import messaging from '@react-native-firebase/messaging';
+import {Dispatch} from 'react';
 
 import HomeScreen from '../Home/HomeScreen';
 import ExploreScreen from '../Explore/ExploreScreen';
@@ -28,6 +30,20 @@ const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const MainTabScreen = () => {
+  const [notification, setNotification] = useState([]);
+
+  messaging().onMessage(remoteMessage => {
+    setNotification([...notification, remoteMessage]);
+  });
+
+  const GetDeviceFCM = () => {
+    messaging().onTokenRefresh(fcmToken => {
+      console.log('token refreshed');
+    });
+  };
+
+  GetDeviceFCM();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -89,7 +105,7 @@ const MainTabScreen = () => {
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationScreen}
+        children={() => <NotificationScreen notification={notification} />}
         options={{
           tabBarLabel: 'Bells',
           tabBarIcon: ({color, focused}) => (
@@ -102,7 +118,7 @@ const MainTabScreen = () => {
               style={focused ? {transform: [{rotate: '15deg'}]} : null}
             />
           ),
-          tabBarBadge: 5,
+          tabBarBadge: 1,
         }}
       />
       <Tab.Screen

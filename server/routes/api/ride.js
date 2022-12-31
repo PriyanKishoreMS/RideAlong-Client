@@ -28,7 +28,6 @@ router.post('/', auth, async (req, res) => {
     'vehicleType',
     'vehicleNumber',
     'vehicleModel',
-    'description',
   ];
 
   standardFields.forEach(field => {
@@ -47,6 +46,11 @@ router.post('/', auth, async (req, res) => {
       {new: true},
     );
     res.json(ride);
+
+    const followerTokens = await User.find({
+      following: req.user.id,
+    }).select('fcmtoken');
+    console.log(followerTokens);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

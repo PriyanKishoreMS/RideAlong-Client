@@ -19,6 +19,7 @@ import {setDestination, setOrigin} from '../../slices/navSlice';
 import MenuButton from '../../components/utils/MenuButton';
 import RideCard from '../../components/RideCard';
 import SetOrigin from '../../components/SetOrigin';
+import {useEffect} from 'react';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -33,6 +34,10 @@ const HomeScreen = () => {
   } else {
     greetings = 'Good Evening';
   }
+
+  useEffect(() => {
+    console.log('hello');
+  }, []);
 
   // const getCurrentLocation = () => {
   //   Geolocation.getCurrentPosition(

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Button, Icon} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import tw from 'twrnc';
 
 import {postFriend} from '../../slices/userSlice';

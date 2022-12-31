@@ -1,10 +1,14 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const port = 5000 || process.env.PORT;
+var admin = require('firebase-admin');
+var serviceAccount = require('./config/serviceAccountKey.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+connectDB();
 
 const app = express();
-
-connectDB();
 
 app.use(express.json());
 
@@ -16,21 +20,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-});
-
-const io = require('socket.io')(server, {
-  // pingTimeout: 60000,
-  cors: {
-    origin: 'http://localhost:3000/',
-    methods: ['GET', 'POST'],
-  },
-});
-
-io.on('connection', socket => {
-  console.log(`user connected ${socket.id}`);
-  socket.on('disconnect', () => {
-    console.log(`user disconnected ${socket.id}`);
-  });
 });

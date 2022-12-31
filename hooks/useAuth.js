@@ -6,6 +6,10 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
 import {GOOGLE_WEBCLIENTID} from '@env';
+import messaging from '@react-native-firebase/messaging';
+import {deleteFCMToken} from '../slices/userSlice';
+import {useDispatch} from 'react-redux';
+import {DeviceEventEmitter} from 'react-native';
 
 GoogleSignin.configure({
   webClientId: GOOGLE_WEBCLIENTID,
@@ -14,8 +18,23 @@ GoogleSignin.configure({
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({children}) => {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(false);
+
+  const GetFCMToken = async () => {
+    const token = await messaging().getToken();
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+      console.log('FCMtoken', token);
+    }
+    return token;
+  };
 
   return (
     <AuthContext.Provider
@@ -24,6 +43,7 @@ export const AuthProvider = ({children}) => {
         profile,
         setUser,
         setProfile,
+        GetFCMToken,
         googleSignin: async () => {
           try {
             const {idToken} = await GoogleSignin.signIn();
@@ -41,13 +61,17 @@ export const AuthProvider = ({children}) => {
             [
               {
                 text: 'Cancel',
-                onPress: () => console.log('Logout Cancelled'),
+                onPress: () => {
+                  console.log('Logout Cancelled');
+                  console.log(GetDeviceFCM());
+                },
                 style: 'cancel',
               },
               {
                 text: 'Yes',
                 onPress: async () => {
                   try {
+                    await dispatch(deleteFCMToken());
                     await GoogleSignin.revokeAccess();
                     await GoogleSignin.signOut();
                     // console.log(await AsyncStorage.getItem('token'), 'before');

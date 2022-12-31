@@ -66,15 +66,33 @@ export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
       email: users.email,
       name: users.name,
       photoURL: users.photoURL,
+      fcmtoken: users.fcmtoken,
     }),
   })
     .then(res => res.json())
     .then(data => {
       onValueChange('token', data.token);
-      // console.log(data.token, 'token from postUser');
+      console.log(data.token, 'heres the authtoken');
     })
     .catch(err => console.log(err));
 });
+
+export const deleteFCMToken = createAsyncThunk(
+  'user/deleteFCMToken',
+  async () => {
+    var token = await AsyncStorage.getItem('token');
+    return await fetch(`http://${IP}/api/users/me/fcm`, {
+      method: 'DELETE',
+      headers: {
+        'auth-token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .catch(err => console.error(err, 'error from deleteFCMToken'));
+  },
+);
 
 export const postFriend = createAsyncThunk('user/postFriend', async id => {
   var token = await AsyncStorage.getItem('token');
@@ -378,6 +396,17 @@ const userSlice = createSlice({
       state.profile = action.payload;
     },
     [getFollowersByUserId.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [deleteFCMToken.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteFCMToken.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.profile = action.payload;
+    },
+    [deleteFCMToken.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

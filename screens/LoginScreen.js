@@ -15,6 +15,7 @@ import {GOOGLE_WEBCLIENTID} from '@env';
 const LoginScreen = () => {
   const {googleSignin} = useContext(AuthContext);
   const {setProfile} = useContext(AuthContext);
+  const {GetFCMToken} = useContext(AuthContext);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -28,11 +29,13 @@ const LoginScreen = () => {
     try {
       await googleSignin();
       const userInfo = auth().currentUser;
+      const fcmToken = await GetFCMToken();
       const users = {
         uid: userInfo.uid,
         name: userInfo.displayName,
         email: userInfo.email,
         photoURL: userInfo.photoURL,
+        fcmtoken: fcmToken,
       };
       await dispatch(postUser({users}));
       dispatch(checkUserProfileStatus())

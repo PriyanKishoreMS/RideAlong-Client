@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../../models/User');
 require('dotenv').config();
 const secret = process.env.JWT_SECRET;
+const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
 
@@ -14,6 +15,13 @@ const auth = require('../../middleware/auth');
 //   let users = await User.find();
 //   res.send(users);
 // });
+
+try {
+  admin.app();
+  console.log('Firebase Admin SDK has been initialized');
+} catch (error) {
+  console.log('Firebase Admin SDK has not been initialized');
+}
 
 router.get('/', auth, async (req, res) => {
   try {
@@ -83,15 +91,23 @@ router.get('/me', auth, async (req, res) => {
 // @access Public
 
 router.post('/', async (req, res) => {
-  const {uid, name, email, photoURL} = req.body;
+  const {uid, name, email, photoURL, fcmtoken} = req.body;
 
   try {
     let user = await User.findOne({email});
 
     if (user) {
       console.log('User already exists');
-      user = await User.findOneAndUpdate({photoURL}, {new: true});
-      console.log('user updated');
+      if (user.fcmtoken.indexOf(fcmtoken) === -1) {
+        user.fcmtoken.push(fcmtoken);
+        await user.save();
+        console.log('FCMToken added');
+      }
+      if (user.photoURL !== photoURL) {
+        user.photoURL = photoURL;
+        await user.save();
+        console.log('photoURL updated');
+      }
       const payload = {
         user: {
           id: user.id,
@@ -128,6 +144,30 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+});
+
+router.delete('/me/fcm', auth, async (req, res) => {
+  try {
+    // const {fcmtoken} = req.body;
+    // await User.findByIdAndUpdate(
+    //   req.user.id,
+    //   {
+    //     $pull: {fcmtoken: fcmtoken},
+    //   },
+    //   err => {
+    //     if (err) console.error(err);
+    //     else console.log('FCMToken removed');
+    //   },
+    // );
+    // delete the fcmtoken array
+    const user = await User.findById(req.user.id);
+    user.fcmtoken = [];
+    await user.save();
+    res.status(200).json({msg: 'FCMToken removed'});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
@@ -284,6 +324,7 @@ router.patch('/friend/:id', auth, async (req, res) => {
   try {
     const profile = await User.findById(req.user.id);
     const friendProfile = await User.findById(req.params.id);
+    const fcmToken = friendProfile.fcmtoken;
 
     if (profile === friendProfile) {
       return res.status(400).json({msg: 'You cannot add yourself as a friend'});
@@ -300,15 +341,51 @@ router.patch('/friend/:id', auth, async (req, res) => {
       friendProfile.followers = friendProfile.followers.filter(
         follower => follower != req.user.id,
       );
+
+      await profile.save();
+      await friendProfile.save();
+      res.json(profile.following);
     } else {
       profile.following.push(req.params.id);
       friendProfile.followers.push(req.user.id);
+      await profile.save();
+      await friendProfile.save();
+      res.json(profile.following);
+
+      const verifyToken = async token => {
+        const message = {
+          notification: {
+            title: `${profile.name} has added you as a friend`,
+            body: `Tap to view ${profile.name}'s profile`,
+          },
+          data: {
+            picture: profile.photoURL,
+          },
+          token: token,
+        };
+        const response = await admin.messaging().send(message);
+        return response;
+      };
+
+      for (let i = 0; i < fcmToken.length; i++) {
+        try {
+          await verifyToken(fcmToken[i]);
+          console.log('Message sent successfully');
+        } catch (err) {
+          if (
+            err.code === 'messaging/registration-token-not-registered' ||
+            err.code === 'messaging/invalid-argument'
+          ) {
+            console.log('Token is invalid');
+            friendProfile.fcmtoken = friendProfile.fcmtoken.filter(
+              token => token != fcmToken[i],
+            );
+            await friendProfile.save();
+            console.log('Token removed');
+          }
+        }
+      }
     }
-
-    await profile.save();
-    await friendProfile.save();
-
-    res.json(profile.following);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
