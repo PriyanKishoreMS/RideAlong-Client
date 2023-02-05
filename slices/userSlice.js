@@ -30,6 +30,7 @@ export const getAllUsers = createAsyncThunk(
     )
       .then(res => res.json())
       .then(data => {
+        // console.log(data, 'data from getAllUsers');
         return data;
       })
       .catch(err => console.error(err, 'error from getAllUsers'));

@@ -35,7 +35,7 @@ const Following = ({id}) => {
       setFollowing(arrFollowing);
       setLoading(false);
     });
-    // console.log(lastPage, 'lastPage');
+    console.log(following, 'lastPage');
     console.log(page, 'page');
   }, [page]);
 

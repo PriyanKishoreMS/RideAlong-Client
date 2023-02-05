@@ -85,10 +85,10 @@ const HomeScreen = () => {
         </View>
         <GooglePlacesAutocomplete
           placeholder="Where from?"
-          nearbyPlacesAPI="GoogleReverseGeocoding"
-          GoogleReverseGeocodingQuery={{
-            rankby: 'distance',
-          }}
+          // nearbyPlacesAPI="GoogleReverseGeocoding"
+          // GoogleReverseGeocodingQuery={{
+          //   rankby: 'distance',
+          // }}
           GooglePlacesSearchQuery={{
             rankby: 'distance',
           }}

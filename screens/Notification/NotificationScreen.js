@@ -4,7 +4,10 @@ import tw from 'twrnc';
 import MenuButton from '../../components/utils/MenuButton';
 
 const NotificationScreen = ({notification}) => {
-  console.log(notification);
+  // console.log(
+  //   notification,
+  //   '\n---------------notification here -----------------\n',
+  // );
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
       <View style={tw`p-5`}>

@@ -46,7 +46,6 @@ const SingleRideScreen = () => {
       setUserId(res.payload._id);
     });
     setRideId(id);
-    getTravelTime();
     setRideData(rideInfo);
   }, []);
 
@@ -56,20 +55,20 @@ const SingleRideScreen = () => {
     console.log('hit');
   }, [passengersState, requestsState]);
 
-  const getTravelTime = async () => {
-    await fetch(
-      `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${rideData?.source}&destinations=${rideData?.destination}&key=${GOOGLEMAPS_API_KEY}`,
-    )
-      .then(res => res.json())
-      .then(data => {
-        setRideData({
-          ...rideData,
-          travelTime: data.rows[0].elements[0].duration.text,
-          distance: data.rows[0].elements[0].distance.value,
-        });
-      })
-      .catch(err => console.log(err));
-  };
+  // const getTravelTime = async () => {
+  //   await fetch(
+  //     `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${rideData?.source}&destinations=${rideData?.destination}&key=${GOOGLEMAPS_API_KEY}`,
+  //   )
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setRideData({
+  //         ...rideData,
+  //         travelTime: data.rows[0].elements[0].duration.text,
+  //         distance: data.rows[0].elements[0].distance.value,
+  //       });
+  //     })
+  //     .catch(err => console.log(err));
+  // };
 
   return (
     <SafeAreaView>
@@ -79,7 +78,7 @@ const SingleRideScreen = () => {
       {/* <View style={tw`h-3/5`}> */}
       <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
         <BottomSheetScrollView>
-          {rideData && getTravelTime() ? (
+          {rideData ? (
             <View style={tw``}>
               <View style={tw`px-2.5 bg-slate-200 flex-row justify-between`}>
                 <TouchableOpacity

@@ -13,7 +13,6 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      active: rides.active,
       timestamp: rides.timestamp,
       source: rides.source,
       destination: rides.destination,
@@ -21,6 +20,8 @@ export const postRide = createAsyncThunk('ride/postRide', async ({rides}) => {
       sourceLng: rides.sourceLng,
       destinationLat: rides.destinationLat,
       destinationLng: rides.destinationLng,
+      distance: rides.distance,
+      travelTime: rides.travelTime,
       seats: rides.seats,
       price: rides.price,
       vehicleType: rides.vehicleType,
@@ -132,6 +133,27 @@ export const deleteRide = createAsyncThunk('ride/deleteRide', async id => {
     .then(res => res.json())
     .catch(err => console.log(err, 'error from rideSlice'));
 });
+
+// export const distancematrix = createAsyncThunk(
+//   'ride/distancematrix',
+//   async ({data}) => {
+//     var token = await AsyncStorage.getItem('token');
+//     return await fetch(`http://${IP}/api/ride/distancematrix`, {
+//       method: 'POST',
+//       headers: {
+//         'auth-token': token,
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         origin: data.origin,
+//         destination: data.destination,
+//       }),
+//     })
+//       .then(res => res.json())
+//       .catch(err => console.log(err, 'error from rideSlice'));
+//   },
+// );
 
 const rideSlice = createSlice({
   name: 'ride',

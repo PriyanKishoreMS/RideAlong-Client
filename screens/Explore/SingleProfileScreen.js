@@ -24,13 +24,14 @@ const SingleProfileScreen = ({route, navigation}) => {
 
   var profileData = useSelector(state => state?.profile?.profile);
   var followData = useSelector(
-    state => state?.profile?.profile?.profile?.user?.followers,
+    state => state?.profile?.profile?.followers?.followers,
   );
 
   useEffect(() => {
     setProfile(profileData);
     console.log('profileData', profileData);
     if (followData?.includes(id)) setIsFollow(true);
+    console.log(followData, 'isFollow');
   }, []);
 
   return (
@@ -77,7 +78,7 @@ const SingleProfileScreen = ({route, navigation}) => {
                     <Text style={tw`text-xl text-gray-600`}>
                       {profile?.followingCount === 0
                         ? profile?.followingCount
-                        : profile?.followingCount - 1}
+                        : profile?.followingCount}
                     </Text>
                     <Text style={tw`text-base text-gray-600`}>Following</Text>
                   </TouchableOpacity>

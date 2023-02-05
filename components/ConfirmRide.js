@@ -45,7 +45,6 @@ const ConfirmRide = ({navigation}) => {
   // }, []);
 
   const [state, setState] = useState({
-    active: true,
     date: new Date(),
     time: new Date(),
     origin: origin.description,
@@ -54,12 +53,16 @@ const ConfirmRide = ({navigation}) => {
     originLng: origin.location.lng,
     destinationLat: destination.location.lat,
     destinationLng: destination.location.lng,
+    travelTime: travelTimeInformation?.duration?.text,
+    distance: travelTimeInformation?.distance?.value,
     seats: '',
     price: '',
     vehicleType: '',
     vehicleNumber: '',
     vehicleModel: '',
   });
+
+  console.log('here', state);
 
   //covert date and time to one timestamp
   const convertDateTime = (date, time) => {
@@ -103,7 +106,6 @@ const ConfirmRide = ({navigation}) => {
     } else {
       try {
         const rides = {
-          active: state.active,
           timestamp: convertDateTime(state.date, state.time).toString(),
           source: state.origin,
           destination: state.destination,
@@ -111,6 +113,8 @@ const ConfirmRide = ({navigation}) => {
           sourceLng: state.originLng,
           destinationLat: state.destinationLat,
           destinationLng: state.destinationLng,
+          travelTime: state.travelTime,
+          distance: state.distance,
           seats: state.seats,
           price: state.price,
           vehicleType: state.vehicleType,
@@ -193,11 +197,11 @@ const ConfirmRide = ({navigation}) => {
               </View>
             </View>
             {/* <View style={tw`flex flex-row`}>
-          <Text style={tw`font-bold text-gray-600`}>Travel Time: </Text>
-          <Text style={tw`text-left `}>
-            {travelTimeInformation?.duration?.text}
-          </Text>
-        </View> */}
+              <Text style={tw`font-bold text-gray-600`}>Travel Time: </Text>
+              <Text style={tw`text-left `}>
+                {travelTimeInformation?.duration?.text}
+              </Text>
+            </View> */}
 
             <View style={tw`flex flex-row justify-between mt-2`}>
               <TouchableOpacity
@@ -286,7 +290,7 @@ const ConfirmRide = ({navigation}) => {
                     valueField="value"
                     onChange={text => {
                       setState({...state, vehicleType: text.value});
-                      console.log(state?.vehicleType);
+                      // console.log(state?.vehicleType);
                     }}
                     placeholder="Type"
                     placeholderStyle={tw`text-gray-500`}

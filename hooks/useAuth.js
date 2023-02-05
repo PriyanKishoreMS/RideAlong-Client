@@ -63,7 +63,6 @@ export const AuthProvider = ({children}) => {
                 text: 'Cancel',
                 onPress: () => {
                   console.log('Logout Cancelled');
-                  console.log(GetDeviceFCM());
                 },
                 style: 'cancel',
               },

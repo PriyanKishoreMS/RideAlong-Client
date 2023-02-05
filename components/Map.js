@@ -41,7 +41,7 @@ const Map = () => {
         });
     };
     getTravelTime();
-  }, [origin, destination, GOOGLEMAPS_API_KEY]);
+  }, [origin, destination]);
 
   return (
     <MapView
@@ -81,7 +81,7 @@ const Map = () => {
           destination={destination.description}
           apikey={GOOGLEMAPS_API_KEY}
           strokeWidth={3}
-          optimizeWaypoints={true}
+          // optimizeWaypoints={true}
           strokeColor="black"
         />
       )}
