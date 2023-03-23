@@ -42,13 +42,13 @@ const LoginScreen = () => {
     try {
       await googleSignin();
       const userInfo = auth().currentUser;
-      const fcmToken = await GetFCMToken();
+      // const fcmToken = await GetFCMToken();
       const users = {
         uid: userInfo.uid,
         name: userInfo.displayName,
         email: userInfo.email,
         photoURL: userInfo.photoURL,
-        fcmtoken: fcmToken,
+        // fcmtoken: fcmToken,
       };
       await dispatch(postUser({users}));
       dispatch(checkUserProfileStatus())

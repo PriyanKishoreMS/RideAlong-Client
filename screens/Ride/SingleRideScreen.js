@@ -96,7 +96,7 @@ const SingleRideScreen = () => {
                     {Math.round(
                       (rideData.distance / 1000 + Number.EPSILON) * 100,
                     ) / 100}{' '}
-                    km - {rideData.travelTime}
+                    km - {rideData?.travelTime}
                   </Text>
                 ) : (
                   <Text style={tw`text-center py-2 text-xl font-bold`}>

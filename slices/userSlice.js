@@ -55,7 +55,7 @@ export const getMyUser = createAsyncThunk('users/getMyUser', async () => {
 });
 
 export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
-  // console.log(users, 'users from postUser');
+  console.log(users, 'users from postUser');
   return await fetch(`http://${IP}/api/users`, {
     method: 'POST',
     headers: {
@@ -67,7 +67,7 @@ export const postUser = createAsyncThunk('user/postUser', async ({users}) => {
       email: users.email,
       name: users.name,
       photoURL: users.photoURL,
-      fcmtoken: users.fcmtoken,
+      // fcmtoken: users.fcmtoken,
     }),
   })
     .then(res => res.json())
